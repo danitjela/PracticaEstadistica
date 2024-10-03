@@ -27,9 +27,10 @@ El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos d
 
 # Importación de datos y carga de paquetes
 
-Para comenzar nuestro análisis descriptivo, necesitamos cargar una serie de paquetes en R que facilitarán la manipulación de datos, la creación de gráficos, y la presentación de tablas. Estos paquetes incluyen 'tidyverse' para la manipulación de datos, 'summarytools' y 'corrplot' para análisis estadísticos, 'GGally' para gráficos de pares, 'gt' y 'flextable' para tablas avanzadas, 'knitr' para la integración de R con documentos de texto, 'dplyr' para la modificación de las columnas en un data frame.
+Para comenzar nuestro análisis descriptivo, necesitamos cargar una serie de paquetes en R que facilitarán la manipulación de datos, la creación de gráficos, y la presentación de tablas. Estos paquetes incluyen 'tidyverse' para la manipulación de datos, 'summarytools' y 'corrplot' para análisis estadísticos, 'GGally' para gráficos de pares, 'gt' y 'flextable' para tablas avanzadas, 'knitr' para la integración de R con documentos de texto, 'dplyr' para la modificación de los datos en un data frame.
 
 ```{r}
+
 library(tidyverse)
 library(summarytools)
 library(GGally)
@@ -38,6 +39,7 @@ library(flextable)
 library(knitr) 
 library(corrplot)
 library(dplyr)
+
 ```
 
 A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ello, utilizamos el método read.csv(), al cual le introducimos como parámetros: la ruta relativa del archivo, se especifica que el archivo tiene una fila de encabezados para los nombres de las variables y el tipo de separación de los elementos en el archivo (en nuestro caso commas). El resultado de esta operación se almacena en la variable lab con la que trabajaremos durante el análisis.
@@ -48,27 +50,20 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
   # 'mutate(fecha = as.Date(fecha))' transforma la columna 'fecha' a formato de fecha.
   # 'mutate()' es una función del paquete dplyr que se utiliza para añadir nuevas variables o transformar las existentes.
   # 'as.Date()' convierte los datos a formato de fecha.
-  lab <- lab %>%
+  lab |>
   mutate(releaseDate = as.Date(releaseDate))
-
+  
 ```
 
 
 # Diccionario de datos
 
-En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'lab.xlsx'. Este diccionario es esencial para entender la naturaleza y el tipo de información que cada variable representa. Las variables abarcan desde identificadores y fechas de producción hasta medidas específicas de calidad y características del queso. Este entendimiento es crucial para el análisis posterior y la interpretación de los resultados.
+En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Este diccionario es esencial para entender la naturaleza y el tipo de información que cada variable representa. Las variables abarcan desde COMPLETAR. Este entendimiento es crucial para el análisis posterior y la interpretación de los resultados.
 
-* `fecha`: Fecha de producción
-* `codigo`: Un identificador de la pieza
-* `est`: Extracto seco total (%)
-* `mg`: Materia grasa (%)
-* `sal`: Cantidad de sal (mg/100g)
-* `ph`: pH medido
-* `ebacteria`: Recuento de un tipo de bacterias
-* `analista`: Identificador del analista
-* `tipo`: Tipo de queso (A, B, C)
-* `bacteriax`: Recuento de otro tipo de bacterias
-* `imperfecciones`: Recuento de imperfecciones en una inspección visual
+* `a`: a
+* `a`: a
+* `a`: a
+* `a`: a
 
 # Muestra del dataset
 
@@ -102,33 +97,11 @@ Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos
 
 Iniciamos nuestro EDA con un enfoque en los datos univariantes, creando tablas de frecuencias para obtener una visión general de la distribución de nuestras variables categóricas.
 
-Primero, generamos una tabla de frecuencias para la variable 'tipo', calculando la frecuencia absoluta y relativa de cada categoría. Esto nos ayuda a entender cómo se distribuyen los distintos tipos de queso en nuestro dataset.
+Primero, generamos una tabla de frecuencias para la variable 'copiesSold', calculando la frecuencia absoluta y relativa de cada categoría. Esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra.
 
 ```{r}
-# 'tabla_frecuencias <- lab |> count(tipo) |>' crea una tabla de frecuencias a partir del dataframe 'lab'.
-tabla_frecuencias <- lab |> 
-  # 'count(tipo)' cuenta el número de ocurrencias de cada valor único en la columna 'tipo'.
-  # Esta función agrupa por 'tipo' y luego cuenta las ocurrencias en cada grupo.
-  count(tipo) |> 
-  # 'mutate()' añade nuevas columnas al dataframe.
-  # 'f = n/nrow(lab)' calcula la frecuencia relativa de cada 'tipo', dividiendo el conteo de cada tipo por el número total de filas en 'lab'.
-  mutate(f = n/nrow(lab),
-         # 'N = cumsum(n)' calcula la frecuencia acumulada (conteo acumulativo) para cada 'tipo'.
-         N = cumsum(n),
-         # 'F = cumsum(f)' calcula la frecuencia relativa acumulada.
-         F = cumsum(f)) 
-
-# 'knitr::kable(tabla_frecuencias, digits = 4)' utiliza la función kable de knitr para crear una tabla bien formateada.
-# 'digits = 4' especifica que los números se redondeen a 4 dígitos decimales.
-knitr::kable(tabla_frecuencias, digits = 4)
-
-```
-
-A continuación, creamos una tabla de frecuencias para 'imperfecciones', proporcionando una visión clara de cómo se distribuyen las imperfecciones observadas en los quesos. Esta tabla también incluye la frecuencia relativa acumulada para cada categoría.
-
-```{r}
-# Calcula la tabla de frecuencias de la variable 'imperfecciones' en el dataframe 'lab'.
-table(lab$imperfecciones) |> 
+# Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
+table(lab$copiesSold) |> 
   # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
   # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
@@ -136,16 +109,53 @@ table(lab$imperfecciones) |>
   mutate(F = cumsum(Freq)/nrow(lab)) |> 
   # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
   gt() |> 
+  
+  # Añade un título en cursiva y negrita a la tabla de frecuencias
+  tab_header(
+    title = md("**_Nº de copias vendidas_**")
+  ) |>
+  
   # Cambia las etiquetas de las columnas a notación matemática.
   cols_label(Var1 = "\\(x_i\\)",  # Cambia el nombre de 'Var1' a 'x_i' (representando valores individuales).
              Freq = "\\(n_i\\)",  # Cambia 'Freq' a 'n_i' (representando la frecuencia de cada valor).
              F = "\\(F_i\\)") |>  # Cambia 'F' a 'F_i' (representando la frecuencia relativa acumulada de cada valor).
-  # Formatea los números a mostrar tres decimales.
-  fmt_number(3, decimals = 3) |> 
-  # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
+  # Formatea los números a mostrar cuatro decimales.
+  fmt_number(3, decimals = 4) |> 
+  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
   tab_style(style = list(
     cell_text(weight = "bold")),  
-    locations = cells_body(rows = c(3, 5)))
+    locations = cells_column_labels())
+
+```
+
+A continuación, creamos una tabla de frecuencias para 'price', proporcionando una visión clara de cuánto cuesta una copia de cada juego. Esta tabla también incluye la frecuencia relativa acumulada para cada categoría.
+
+```{r}
+# Calcula la tabla de frecuencias de la variable 'price' en el dataframe 'lab'.
+table(lab$price) |> 
+  # Convierte la tabla de frecuencias en un dataframe.
+  as.data.frame() |> 
+  # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
+  # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
+  mutate(F = cumsum(Freq)/nrow(lab)) |> 
+  # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
+  gt() |> 
+  
+  # Añade un título en cursiva y negrita a la tabla de frecuencias
+  tab_header(
+    title = md("**_Precio por copia_**")
+  ) |>
+  
+  # Cambia las etiquetas de las columnas a notación matemática.
+  cols_label(Var1 = "\\(x_i\\)",  # Cambia el nombre de 'Var1' a 'x_i' (representando valores individuales).
+             Freq = "\\(n_i\\)",  # Cambia 'Freq' a 'n_i' (representando la frecuencia de cada valor).
+             F = "\\(F_i\\)") |>  # Cambia 'F' a 'F_i' (representando la frecuencia relativa acumulada de cada valor).
+  # Formatea los números a mostrar cuatro decimales.
+  fmt_number(3, decimals = 4) |> 
+  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
+  tab_style(style = list(
+    cell_text(weight = "bold")),  
+    locations = cells_column_labels())
 ```
 
 
@@ -156,18 +166,18 @@ table(lab$imperfecciones) |>
 
 Ahora, visualizamos la distribución de las categorías mediante gráficos de barras. Estos gráficos son una herramienta efectiva para representar visualmente la frecuencia de cada categoría en nuestras variables categóricas.
 
-Este gráfico de barras muestra la frecuencia absoluta de cada tipo de queso en nuestro dataset. Es una forma sencilla y directa de visualizar la cantidad de cada tipo de queso.
+Este gráfico de barras muestra la frecuencia absoluta de cada copia vendida en nuestro dataset. Es una forma sencilla y directa de visualizar la cantidad total de copias vendidas.
 
 ```{r}
-# Inicia una visualización de ggplot con 'lab' como el dataframe y 'tipo' como variable en el eje x.
+# Inicia una visualización de ggplot con 'lab' como el dataframe y 'copiesSold' como variable en el eje x.
 lab |> 
-  ggplot(aes(x = tipo)) +
+  ggplot(aes(x = copiesSold)) +
   # Añade un gráfico de barras, rellenando las barras con el color #CB0017.
-  geom_bar(fill = "#CB0017") +
+  geom_bar(fill = "#2596be") +
   # Aplica un tema predeterminado en blanco y negro para la visualización.
   theme_bw() + 
   # Establece los títulos del gráfico, eje x, y eje y.
-  labs(title = "Tipos de queso", 
+  labs(title = "Nº de copias vendidas", 
        x = "Tipo",
        y = "Frecuencia absoluta")
 ```
@@ -178,12 +188,12 @@ Aquí, empleamos un enfoque ligeramente diferente al invertir el orden de las ba
 # 'fct_rev' invierte el orden de los factores para que el gráfico se muestre en orden inverso.
 # 'as_factor' convierte la columna 'imperfecciones' en un factor si no lo es ya.
 lab |> 
-  mutate(imperfecciones = fct_rev(as_factor(imperfecciones))) |> 
+  mutate(imperfecciones = fct_rev(as_factor(copiesSold))) |> 
   # Inicio de la creación del gráfico con ggplot2, especificando los datos y mapeando
   # la variable 'imperfecciones' en el eje y.
-  ggplot(aes(y = imperfecciones)) +
+  ggplot(aes(y = copiesSold)) +
   # 'geom_bar' añade barras al gráfico. 'fill' especifica el color de relleno de las barras.
-  geom_bar(fill = "#CB0017") +
+  geom_bar(fill = "#2596be") +
   # Aplica un tema blanco y negro al gráfico para un diseño más limpio y profesional.
   theme_bw() +
   # Personaliza las etiquetas de los ejes y el título del gráfico. 'expression' permite
@@ -218,19 +228,19 @@ Este gráfico muestra la proporción de análisis realizados por cada analista. 
 ```{r}
 # Primero, calcula las proporciones y conserva el conteo original
 # 'lab' es el dataframe que contiene los datos.
-# 'count(analista)' cuenta cuántas veces aparece cada 'analista'.
+# 'count(copiesSold)' cuenta cuántas veces aparece cada 'copiesSold'.
 # 'mutate(prop = n / sum(n))' añade una nueva columna 'prop' que representa la proporción relativa.
-analista_prop <- lab %>%
-  count(analista) %>%
+copiesSold_prop <- lab %>%
+  count(copiesSold) %>%
   mutate(prop = n / sum(n))
 
 # Luego, usa ggplot para visualizar
 # 'ggplot()' inicia la construcción de un gráfico.
-# 'aes(x = reorder(analista, prop), y = prop, fill = n)' define las estéticas:
-# 'x = reorder(analista, prop)' ordena los analistas en el eje x según su proporción.
+# 'aes(x = reorder(copiesSold, prop), y = prop, fill = n)' define las estéticas:
+# 'x = reorder(copiesSold, prop)' ordena los copiesSold en el eje x según su proporción.
 # 'y = prop' asigna la proporción relativa al eje y.
 # 'fill = n' usa el conteo original para el color de las barras.
-ggplot(analista_prop, aes(x = reorder(analista, prop), y = prop, fill = n)) +
+ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) +
   
   # 'geom_bar(stat = "identity")' crea un gráfico de barras. 
   # 'stat = "identity"' indica que ya se proporcionaron las alturas de las barras (proporciones).
@@ -244,7 +254,7 @@ ggplot(analista_prop, aes(x = reorder(analista, prop), y = prop, fill = n)) +
 
   # 'labs()' establece los títulos y etiquetas del gráfico.
   # 'title', 'x', 'y' definen el título del gráfico y los títulos de los ejes x e y respectivamente.
-  labs(title = "Tipos de analista", x = "Tipo", y = "Frecuencia relativa") +
+  labs(title = "Nº de copias vendidas", x = "Tipo", y = "Frecuencia relativa") +
 
   # 'scale_fill_gradient()' define un degradado de color para las barras.
   # 'low' y 'high' especifican los colores para los valores bajos y altos del conteo respectivamente.
@@ -277,17 +287,17 @@ lab |> ggplot(aes(ph)) +
 
 ```
 
-A continuación, creamos otro histograma para 'ph', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
+A continuación, creamos otro histograma para 'price', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
 
 ```{r}
-hist(lab$ph, 
-     col = "#CB0017", 
+hist(lab$price, 
+     col = "#2596be", 
      # 'main' define el título principal del gráfico.
-     main = "Histograma pH",
+     main = "Histograma precios",
      # 'bins' establece el número de barras a mostrar en el gráfico
-     bins = 15,
+     bins = 10,
      # 'xlab' y 'ylab' definen los títulos de los ejes X e Y, respectivamente.
-     xlab = "pH", 
+     xlab = "Precio ($)", 
      ylab = "Frecuencia",
      # 'border' establece el color del borde de las barras del histograma a blanco.
      border = "white")
