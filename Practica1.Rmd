@@ -275,25 +275,29 @@ ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) 
 
 A continuación, nos enfocamos en los histogramas, una herramienta crucial para entender la distribución de nuestras variables cuantitativas. Estos gráficos nos permitirán observar la forma y la dispersión de los datos.
 
-Primero, generamos un histograma para la variable 'ph', utilizando el color 'steelblue' para las barras, lo que nos permite observar la distribución del pH en los quesos.
+Primero, generamos un histograma para la variable 'avgPlaytime', utilizando el color 'steelblue' para las barras, lo que nos permite observar la distribución de las horas que las personas le dedican a los videojuegos.
 
 ```{r}
-# 'lab |> ggplot(aes(ph)) +' inicia la construcción de un gráfico utilizando ggplot2 con datos del dataframe 'lab'.
-lab |> ggplot(aes(ph)) +
-  # 'aes(ph)' establece la estética del gráfico, asignando la variable 'ph' del dataframe 'lab' al eje x.
+# 'lab |> ggplot(aes(avgPlaytime)) +' inicia la construcción de un gráfico utilizando ggplot2 con datos del dataframe 'lab'.
+lab |> ggplot(aes(avgPlaytime)) +
+  # 'aes(avgPlaytime)' establece la estética del gráfico, asignando la variable 'avgPlaytime' del dataframe 'lab' al eje x.
   
   # 'geom_histogram()' añade un histograma al gráfico. Un histograma es útil para visualizar la distribución de una variable continua.
   geom_histogram(
+    
     fill = "steelblue",  # 'fill = "steelblue"' establece el color de relleno de las barras del histograma a azul acero.
-    bins = 15,           # 'bins = 15' especifica el número de barras (o "bins") que el histograma debe tener.
-    col = "white"        # 'col = "white"' define el color del borde de las barras del histograma como blanco.
+             
+    col = "white",      # 'col = "white"' define el color del borde de las barras del histograma como blanco.
+    breaks = seq(0,100, by = 10)
   ) +
   
   # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
   # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
-  theme_bw()
+  theme_bw() +
+    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
 
 ```
+Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
 
 A continuación, creamos otro histograma para 'price', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
 
