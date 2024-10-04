@@ -58,7 +58,7 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
-En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Este diccionario es esencial para entender la naturaleza y el tipo de información que cada variable representa. Las variables abarcan desde COMPLETAR. Este entendimiento es crucial para el análisis posterior y la interpretación de los resultados.
+En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde COMPLETAR.
 
 * `a`: a
 * `a`: a
@@ -93,20 +93,28 @@ Iniciaremos nuestro análisis exploratorio de datos (EDA) para obtener una compr
 
 Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos univariantes. Este enfoque nos permite entender la distribución y frecuencia de cada variable individualmente.
 
-### Tablas de frecuencias
+### Estudio de la variable COPIESSOLD
 
 Iniciamos nuestro EDA con un enfoque en los datos univariantes, creando tablas de frecuencias para obtener una visión general de la distribución de nuestras variables categóricas.
 
-Primero, generamos una tabla de frecuencias para la variable 'copiesSold', calculando la frecuencia absoluta y relativa de cada categoría. Esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra.
+Primero, generamos un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
 
 ```{r}
-# Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
-table(lab$copiesSold) |> 
+  
+  # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
+  table(lab$copiesSold) |> 
+  
   # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
+  
   # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
   # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
-  mutate(F = cumsum(Freq)/nrow(lab)) |> 
+  mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
+  
+  
+  # Ordena la tabla
+  arrange(desc(Freq)) |>
+  
   # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
   gt() |> 
   
@@ -116,15 +124,14 @@ table(lab$copiesSold) |>
   ) |>
   
   # Cambia las etiquetas de las columnas a notación matemática.
-  cols_label(Var1 = "\\(x_i\\)",  # Cambia el nombre de 'Var1' a 'x_i' (representando valores individuales).
-             Freq = "\\(n_i\\)",  # Cambia 'Freq' a 'n_i' (representando la frecuencia de cada valor).
-             F = "\\(F_i\\)") |>  # Cambia 'F' a 'F_i' (representando la frecuencia relativa acumulada de cada valor).
+  cols_label(Var1 = "\\(x_i\\)", Freq = "\\(n_i\\)", freqRelativa = "\\(f_i\\)", 
+  freqAbsAcumulada = "\\(N_i\\)", freqRelAcumulada = "\\(F_i\\)") |>  
+  
   # Formatea los números a mostrar cuatro decimales.
   fmt_number(3, decimals = 4) |> 
+  
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
-  tab_style(style = list(
-    cell_text(weight = "bold")),  
-    locations = cells_column_labels())
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
 
 ```
 
@@ -152,6 +159,7 @@ table(lab$price) |>
              F = "\\(F_i\\)") |>  # Cambia 'F' a 'F_i' (representando la frecuencia relativa acumulada de cada valor).
   # Formatea los números a mostrar cuatro decimales.
   fmt_number(3, decimals = 4) |> 
+  
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
   tab_style(style = list(
     cell_text(weight = "bold")),  
