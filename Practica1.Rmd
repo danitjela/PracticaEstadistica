@@ -22,7 +22,27 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los 1500 juegos más rentables lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024, utilizada para realizar un análisis descriptivo exhaustivo. Con este análisis nuestro equipo pretende realizar estimaciones sobre (COMPLETAR!!!).
+El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
+
+El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
+
+En cuanto a las preguntas, hemos planteado las siguientes:
+
+- ¿Los indies generan más dinero que los AA o AAA?
+- ¿El precio influye en la cantidad de copias vendidas?
+- ¿Es mayor el precio de los indies, de los AA o AAA?
+- ¿Hay mas jugadores en juegos indies, en AA o AAA?
+- ¿Tienen mejores criticas los indies, los AA o los AA?
+- ¿Juegos más largos tienen mejores valoraciones?
+- ¿Depende el precio de las críticas? 
+- ¿Es mejor juego un indie o un AA o AAA?
+- ¿Depende la fecha de salida con el numero de copias vendidas?
+- ¿Son más largos los indies, los AA o AAA?
+- ¿Depende el precio de la duración del juego?
+- ¿Depende la nota con el precio del juego?
+
+Cabe destacar que nos han sorprendido los datos de una variable, la valoración. Ya que hay bastantes juegos que tienen un 0. Esto puede ser debido a un error en la carga del dataset en la página web.
+Además, la variable steamId, no será utilizada porque no encontramos una utilidad para ella en nuestros objetivos.
 
 
 # Importación de datos y carga de paquetes
@@ -60,10 +80,26 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde COMPLETAR.
 
-* `a`: a
-* `a`: a
-* `a`: a
-* `a`: a
+* `name`: Nombre del juego.
+      - Identificador.
+* `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
+      - Marca de tiempo.
+* `copiesSold`: Número de copias vendidas (Unidades).
+      - Cuantitativa / Discreta.
+* `price`: Precio original del juego de salida ($).
+      - Numérica / Discreta
+* `revenue`: Cantidad de dinero recaudada por el juego ($).
+      - Cuantitativa / Discreta.
+* `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
+      - Cuantitativa / Continua.
+* `reviewScore`: Puntuación del juego en Steam (0-100).
+      - Cuantitativa / Discreta.
+* `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
+      - Cualitativa / Multinivel.
+* `publishers`: Empresa que se dedica a la publicación y marketing del juego.
+      - Identificador.
+* `developers`: Empresa que se dedica a desarrollar y mantener el juego.
+      - Identificador.
 
 # Muestra del dataset
 
@@ -170,7 +206,7 @@ table(lab$price) |>
 
 
 
-### Gráficos de barras
+#### Gráficos de barras
 
 Ahora, visualizamos la distribución de las categorías mediante gráficos de barras. Estos gráficos son una herramienta efectiva para representar visualmente la frecuencia de cada categoría en nuestras variables categóricas.
 
@@ -271,7 +307,7 @@ ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) 
 
 ```
 
-### Histogramas
+### Estudio de la variable AVGPLAYTIME
 
 A continuación, nos enfocamos en los histogramas, una herramienta crucial para entender la distribución de nuestras variables cuantitativas. Estos gráficos nos permitirán observar la forma y la dispersión de los datos.
 
@@ -294,7 +330,8 @@ lab |> ggplot(aes(avgPlaytime)) +
   # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
   # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
   theme_bw() +
-    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
+    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", 
+         title = "Distribución de tiempo de juego por intervalos")
 
 ```
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
