@@ -136,9 +136,26 @@ Iniciamos nuestro EDA con un enfoque en los datos univariantes, creando tablas d
 Primero, generamos un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
 
 ```{r}
+
+  lab$logCopiesSold <- log10(lab$copiesSold)
+
+  # Definir los intervalos logarítmicos
+  # Elige un rango adecuado en la escala logarítmica para crear los intervalos.
+  lab$copiesSold_intervalos_log <- cut(lab$logCopiesSold, breaks = seq(floor(min(lab$logCopiesSold)), 
+                                       ceiling(max(lab$logCopiesSold)), by = 0.5), include.lowest = TRUE, right = FALSE)
   
+  # Crear etiquetas para los intervalos con el formato logarítmico y su equivalente en la escala original
+  # Usamos 'paste0' para crear etiquetas que incluyan ambas escalas.
+  lab$copiesSold_intervalos_etiquetas <- sapply(levels(lab$copiesSold_intervalos_log), function(x) {
+    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
+    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
+  })
+
+  # Reemplazar los niveles de 'copiesSold_intervalos_log' por las nuevas etiquetas
+  levels(lab$copiesSold_intervalos_log) <- lab$copiesSold_intervalos_etiquetas
+
   # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
-  table(lab$copiesSold) |> 
+  copiesSold_tablaFrequencias <- table(lab$copiesSold_intervalos_log) |> 
   
   # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
@@ -146,7 +163,6 @@ Primero, generamos un histograma agrupando la variable 'copiesSold' por interval
   # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
   # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
   mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
-  
   
   # Ordena la tabla
   arrange(desc(Freq)) |>
@@ -167,42 +183,84 @@ Primero, generamos un histograma agrupando la variable 'copiesSold' por interval
   fmt_number(3, decimals = 4) |> 
   
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
-  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
+  
+  print(copiesSold_tablaFrequencias)
 
 ```
+### Estudio de la variable PRICE
 
 A continuación, creamos una tabla de frecuencias para 'price', proporcionando una visión clara de cuánto cuesta una copia de cada juego. Esta tabla también incluye la frecuencia relativa acumulada para cada categoría.
 
 ```{r}
-# Calcula la tabla de frecuencias de la variable 'price' en el dataframe 'lab'.
-table(lab$price) |> 
+
+ # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
+  table(lab$price) |> 
+  
   # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
+  
   # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
   # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
-  mutate(F = cumsum(Freq)/nrow(lab)) |> 
+  mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
+  
+  
+  # Ordena la tabla
+  arrange(desc(Freq)) |>
+  
   # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
   gt() |> 
   
   # Añade un título en cursiva y negrita a la tabla de frecuencias
   tab_header(
-    title = md("**_Precio por copia_**")
+    title = md("**_Precio por copia ($)_**")
   ) |>
   
   # Cambia las etiquetas de las columnas a notación matemática.
-  cols_label(Var1 = "\\(x_i\\)",  # Cambia el nombre de 'Var1' a 'x_i' (representando valores individuales).
-             Freq = "\\(n_i\\)",  # Cambia 'Freq' a 'n_i' (representando la frecuencia de cada valor).
-             F = "\\(F_i\\)") |>  # Cambia 'F' a 'F_i' (representando la frecuencia relativa acumulada de cada valor).
+  cols_label(Var1 = "\\(x_i\\)", Freq = "\\(n_i\\)", freqRelativa = "\\(f_i\\)", 
+  freqAbsAcumulada = "\\(N_i\\)", freqRelAcumulada = "\\(F_i\\)") |>  
+  
   # Formatea los números a mostrar cuatro decimales.
   fmt_number(3, decimals = 4) |> 
   
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
-  tab_style(style = list(
-    cell_text(weight = "bold")),  
-    locations = cells_column_labels())
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
+
 ```
 
+A continuación, creamos otro histograma para 'price', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
 
+```{r}
+
+  ggplot(data.frame(x = lab$price), aes(x = x)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
+                 aes(y = ..density..), alpha = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
+                sd = sd(lab$price)), color = "red", size = 1.5) +
+  theme_bw() +
+  labs(title = "Distribución del precio por copia ($)",
+       x = "Precio por copia",
+       y = "Frecuencia absoluta") 
+
+```
+
+```{r}
+
+  ggplot(data.frame(x = lab$price), aes(x = x)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
+                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
+                sd = sd(lab$price)), color = "red", size = 1.5) +
+  theme_bw() +
+  labs(title = "Distribución del precio por copia ($)",
+       x = "Precio por copia",
+       y = "Frecuencia relativa") 
+
+```
+
+```{r}
+  lab|> select(price) |> descr() |> kable(digits = 2)
+```
 
 
 
@@ -336,21 +394,7 @@ lab |> ggplot(aes(avgPlaytime)) +
 ```
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
 
-A continuación, creamos otro histograma para 'price', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
 
-```{r}
-hist(lab$price, 
-     col = "#2596be", 
-     # 'main' define el título principal del gráfico.
-     main = "Histograma precios",
-     # 'bins' establece el número de barras a mostrar en el gráfico
-     bins = 10,
-     # 'xlab' y 'ylab' definen los títulos de los ejes X e Y, respectivamente.
-     xlab = "Precio ($)", 
-     ylab = "Frecuencia",
-     # 'border' establece el color del borde de las barras del histograma a blanco.
-     border = "white")
-```
 
 ### Box-plot
 
