@@ -150,9 +150,7 @@ Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos
 
 ### Estudio de la variable COPIESSOLD
 
-Iniciamos nuestro EDA con un enfoque en los datos univariantes, creando tablas de frecuencias para obtener una visión general de la distribución de nuestras variables categóricas.
-
-Primero, generamos un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
+Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
 
 ```{r}
 
@@ -204,12 +202,54 @@ Primero, generamos un histograma agrupando la variable 'copiesSold' por interval
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
   tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
   
+  # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
+  tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) |>
+  
   print(copiesSold_tablaFrequencias)
+  
+```
+Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en el intervalo [3.5,4.5), por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos con muchos outliers (como ya se había presupuesto previamente). Como resultado, los valores más significativos son: entre las 3162 y 10000 ventas (31%) y entre las 10000 y 31623 ventas (27%).
+
+```{r}
+
+  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
+  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
+                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
+                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+  theme_bw() +
+  labs(title = "Distribución del Nº de copias vendidas",
+       x = "Copias vendidas",
+       y = "Frecuencia relativa") 
 
 ```
+
+```{r}
+
+  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
+  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
+                 aes(y = ..density..), alpha = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
+                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+  theme_bw() +
+  labs(title = "Distribución del Nº de copias vendidas",
+       x = "Copias vendidas",
+       y = "Frecuencia absoluta") 
+
+```
+Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `copiesSold`:
+
+```{r}
+  lab|> select(copiesSold) |> descr() |> kable(digits = 2)
+```
+
+Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos las ventas están sesgados (Skewness = 18.58 // Kurtosis = 419.44 // IQR = 32951)), concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00).
+
+Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las 3162 y las 31623 ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
+
 ### Estudio de la variable PRICE
 
-A continuación, creamos una tabla de frecuencias para 'price', proporcionando una visión clara de cuánto cuesta una copia de cada juego. Esta tabla también incluye la frecuencia relativa acumulada para cada categoría.
+Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, proporcionando una visión clara de cuánto cuesta una copia de cada juego para así, descartar posibles outliers y hacer un análisis más preciso.
 
 ```{r}
 
@@ -243,25 +283,16 @@ A continuación, creamos una tabla de frecuencias para 'price', proporcionando u
   fmt_number(3, decimals = 4) |> 
   
   # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
-  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
+
+  # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
+  tab_style(style = list(
+    cell_text(weight = "bold")),  
+    locations = cells_body(rows = c(1, 2, 3, 4, 5)))
 
 ```
 
-A continuación, creamos otro histograma para 'price', esta vez utilizando un enfoque más tradicional con la función `hist()` de R, proporcionando un estilo diferente y más opciones de personalización.
-
-```{r}
-
-  ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
-                 aes(y = ..density..), alpha = 0.6) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
-                sd = sd(lab$price)), color = "red", size = 1.5) +
-  theme_bw() +
-  labs(title = "Distribución del precio por copia ($)",
-       x = "Precio por copia",
-       y = "Frecuencia absoluta") 
-
-```
+Realmente no hay un precio que destaque en la muestra, ya que se trata de valores muy dispersos. A pesar de ello, podemos destacar los 5 primeros valores con más frecuencia: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%). 
 
 ```{r}
 
@@ -278,9 +309,27 @@ A continuación, creamos otro histograma para 'price', esta vez utilizando un en
 ```
 
 ```{r}
+
+  ggplot(data.frame(x = lab$price), aes(x = x)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
+                 aes(y = ..density..), alpha = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
+                sd = sd(lab$price)), color = "red", size = 1.5) +
+  theme_bw() +
+  labs(title = "Distribución del precio por copia ($)",
+       x = "Precio por copia",
+       y = "Frecuencia absoluta") 
+
+```
+Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `price`:
+
+```{r}
   lab|> select(price) |> descr() |> kable(digits = 2)
 ```
 
+Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.52 // Std. Dev = 12.65), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.52 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness	= 1.57). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	3.84) que nuestra muestra es ligeramente más alta (idealmente Kurtosis =	3.00).
+
+En definitiva, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; a pesar de ello, cabe destacar los 5 primeros precios más frecuentes: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%) y el precio mínimo: 0.00$ y máximo: 99.99$.
 
 
 ### Gráficos de barras
