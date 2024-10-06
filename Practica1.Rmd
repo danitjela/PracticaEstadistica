@@ -22,20 +22,29 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los 1500 juegos mejor valorados lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.Con el analisis de dicho archivo pretendemos estudiar la relación entre...
+<<<<<<< HEAD
 
-Además del objetivo mencionado, también queremos dar respuesta a las siguientes preguntas: 
+El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
 
-- Los indies generan más dinero que los AA o AAA?
-- El precio influye en la cantidad de copias vendidas?
-- Es mayor el precio de los indies o de los AA o AAA?
-- Hay mas jugadores en juegos indies o en AA o AAA?
-- Tienen mejores criticas los indies o los AAA, AA?
-- Depende el precio de las críticas? Es mejor juego un indie o un AA o AAA?
-- Depende la fecha de salida con el numero de copias vendidas?
-- Son más largos los indies o los AA o AAA, y hacen que el precio sea mayor?
+El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
 
-De todas las variables que aparecen, la de "steamId" no la vamos a analizar porque no es necesaria para conseguir nuestro objetivo dentro del proyecto.También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
+En cuanto a las preguntas, hemos planteado las siguientes:
+
+- ¿Los indies generan más dinero que los AA o AAA?
+- ¿El precio influye en la cantidad de copias vendidas?
+- ¿Es mayor el precio de los indies, de los AA o AAA?
+- ¿Hay mas jugadores en juegos indies, en AA o AAA?
+- ¿Tienen mejores criticas los indies, los AA o los AA?
+- ¿Juegos más largos tienen mejores valoraciones?
+- ¿Depende el precio de las críticas? 
+- ¿Es mejor juego un indie o un AA o AAA?
+- ¿Depende la fecha de salida con el numero de copias vendidas?
+- ¿Son más largos los indies, los AA o AAA?
+- ¿Depende el precio de la duración del juego?
+- ¿Depende la nota con el precio del juego?
+
+También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
+>>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
 
 
 # Importación de datos y carga de paquetes
@@ -72,43 +81,45 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
+<<<<<<< HEAD
 En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde el nombre de cada uno de los juegos, hasta los desarrolladores de cada uno de ellos.
 
-* `name`: nombre.
-    - Variable tipo: Identificador. 
-    
-* `releaseDate``: fecha de salida.
-    - Variable tipo: Marca de tiempo.
-    
-* `copiesSold`: copias vendidas.
-    - Variable tipo: Cuantitativa / Discreta. 
-    
-* `price`: precio.
-    - Variable tipo: Numérica / Continua. 
-    
-* `revenue``: recaudación.
-    - Variable tipo: Cuantitativa / Discreta.
-    
-* `avgPlaytime`: tiempo medio de juego.
-    - Variable tipo: Cuantitativa / Continua.
-    
-* `reviewScore`: valoración.  
-    - Variable tipo: Cuantitativa / Discreta.
-    
-* `publisherClass`: categoría de la empresa.
-    - Variable tipo: Cualitativa / Multinivel.
-    
-* `publishers`: editores.
-    - Variable tipo: Identificador.
-    
-* `developers`: desarrolladores.
-    - Variable tipo: Identificador.
-    
+
+* `name`: Nombre del juego.
+      - Variable tipo: Identificador.
+      
+* `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
+      - Variable tipo:Marca de tiempo.
+      
+* `copiesSold`: Número de copias vendidas (Unidades).
+      - Variable tipo: Cuantitativa / Discreta.
+      
+* `price`: Precio original del juego de salida ($).
+      - Variable tipo: Numérica / Discreta
+      
+* `revenue`: Cantidad de dinero recaudada por el juego ($).
+      - Variable tipo: Cuantitativa / Discreta.
+      
+* `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
+      - Variable tipo: Cuantitativa / Continua.
+      
+* `reviewScore`: Puntuación del juego en Steam (0-100).
+      - Variable tipo: Cuantitativa / Discreta.
+      
+* `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
+      - Variable tipo: Cualitativa / Multinivel.
+      
+* `publishers`: Empresa que se dedica a la publicación y marketing del juego.
+      - Variable tipo: Identificador.
+      
+* `developers`: Empresa que se dedica a desarrollar y mantener el juego.
+      - Variable tipo: Identificador.
+      
 * `steamId`: Id de steam
     - Variable tipo: Identificador.
-
-
-
+      
+      
+>>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
 # Muestra del dataset
 
 Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. Este paso es crucial para familiarizarnos con el tipo de datos y para verificar que la importación se haya realizado correctamente. Utilizaremos funciones del paquete 'dplyr' para seleccionar las primeras 10 filas del dataframe 'lab', y luego el paquete 'gt' para presentar estos datos de una manera clara y estructurada.
