@@ -30,18 +30,30 @@ El principal objetivo de nuestro estudio estadístico es dar respuesta a una ser
 
 En cuanto a las preguntas, hemos planteado las siguientes:
 
-- ¿Los indies generan más dinero que los AA o AAA?
-- ¿El precio influye en la cantidad de copias vendidas?
-- ¿Es mayor el precio de los indies, de los AA o AAA?
-- ¿Hay mas jugadores en juegos indies, en AA o AAA?
-- ¿Tienen mejores criticas los indies, los AA o los AA?
-- ¿Juegos más largos tienen mejores valoraciones?
-- ¿Depende el precio de las críticas? 
-- ¿Es mejor juego un indie o un AA o AAA?
-- ¿Depende la fecha de salida con el numero de copias vendidas?
-- ¿Son más largos los indies, los AA o AAA?
-- ¿Depende el precio de la duración del juego?
-- ¿Depende la nota con el precio del juego?
+`- ¿Los indies generan más dinero que los AA o AAA?`
+
+`- ¿El precio influye en la cantidad de copias vendidas?`
+
+`- ¿Es mayor el precio de los indies, de los AA o AAA?`
+
+`- ¿Hay mas jugadores en juegos indies, en AA o AAA?`
+
+`- ¿Tienen mejores criticas los indies, los AA o los AA?`
+
+`- ¿Juegos más largos tienen mejores valoraciones?`
+
+`- ¿Depende el precio de las críticas?`
+
+`- ¿Es mejor juego un indie o un AA o AAA?`
+
+`- ¿Depende la fecha de salida con el numero de copias vendidas?`
+
+`- ¿Son más largos los indies, los AA o AAA?`
+
+`- ¿Depende el precio de la duración del juego?`
+
+`- ¿Depende la nota con el precio del juego?`
+
 
 También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
 >>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
@@ -67,7 +79,7 @@ library (kableExtra)
 
 A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ello, utilizamos el método read.csv(), al cual le introducimos como parámetros: la ruta relativa del archivo, se especifica que el archivo tiene una fila de encabezados para los nombres de las variables y el tipo de separación de los elementos en el archivo (en nuestro caso commas). El resultado de esta operación se almacena en la variable lab con la que trabajaremos durante el análisis.
 
-```{r}
+```{r, results = 'hide'}
 
   lab <- read.csv("DATA/Steam_2024_bestRevenue_1500.csv", header = TRUE, sep = ",")
   # 'mutate(fecha = as.Date(fecha))' transforma la columna 'fecha' a formato de fecha.
@@ -172,7 +184,7 @@ Primero, generamos una tabla de frecuencias y un histograma agrupando la variabl
   levels(lab$copiesSold_intervalos_log) <- lab$copiesSold_intervalos_etiquetas
 
   # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
-  copiesSold_tablaFrequencias <- table(lab$copiesSold_intervalos_log) |> 
+  table(lab$copiesSold_intervalos_log) |> 
   
   # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
@@ -203,9 +215,7 @@ Primero, generamos una tabla de frecuencias y un histograma agrupando la variabl
   tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
   
   # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
-  tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) |>
-  
-  print(copiesSold_tablaFrequencias)
+  tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) 
   
 ```
 Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en el intervalo [3.5,4.5), por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos con muchos outliers (como ya se había presupuesto previamente). Como resultado, los valores más significativos son: entre las 3162 y 10000 ventas (31%) y entre las 10000 y 31623 ventas (27%).
