@@ -78,7 +78,6 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
-En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde COMPLETAR.
 * `name`: Nombre del juego.
       - Identificador.
 * `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
@@ -364,7 +363,50 @@ ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) 
 
 ```
 
-### Estudio de la variable AVGPLAYTIME
+
+### Desarrolladores 
+
+Ahora vamos a analizar la variable "developers". 
+Realmente para nuestro estudio no es de gran importancia, aun así, crearemos una tabla de frecuencia para saber cuales son los 10 desarrolladores más frecuentes, ya que, puede ser curioso saberlo. 
+
+```{r}
+
+table(lab$developers) |> 
+  # Convierte la tabla de frecuencias en un dataframe.
+  as.data.frame() |> 
+  
+  arrange(desc(Freq)) |> 
+  # Selecciona solo los 10 desarrolladores más frecuentes.
+  slice(1:10) |> 
+  # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
+  mutate(F = cumsum(Freq)/sum(Freq)) |> 
+  # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
+  gt() |>  
+  
+  # Añade un título en cursiva y negrita a la tabla de frecuencias
+  tab_header(
+    title = md("**_Los 10 desarrolladores más frecuentes_**")
+  ) |>
+  
+  # Cambia las etiquetas de las columnas a notación matemática.
+  cols_label(Var1 = "Desarrollador",  # Cambia 'Var1' a 'Desarrollador' (nombres individuales).
+             Freq = "Frecuencia",  # Cambia 'Freq' a 'Frecuencia' (representando la frecuencia de cada valor).
+             F = "Frecuencia relativa acumulada") |>  # Cambia 'F' al nombre completo en español.
+  
+  # Formatea los números a mostrar cuatro decimales.
+  fmt_number(3, decimals = 4) |> 
+  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
+  tab_style(style = list(
+    cell_text(weight = "bold")),  
+    locations = cells_column_labels())
+
+
+```
+
+
+
+
+### Histogramas
 
 A continuación, nos enfocamos en los histogramas, una herramienta crucial para entender la distribución de nuestras variables cuantitativas. Estos gráficos nos permitirán observar la forma y la dispersión de los datos.
 
