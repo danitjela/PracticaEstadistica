@@ -22,8 +22,6 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-<<<<<<< HEAD
-
 El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
 
 El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
@@ -55,8 +53,8 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 `- ¿Depende la nota con el precio del juego?`
 
 
-También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
->>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
+Cabe destacar que nos han sorprendido los datos de una variable, la valoración. Ya que hay bastantes juegos que tienen un 0. Esto puede ser debido a un error en la carga del dataset en la página web.
+Además, la variable steamId, no será utilizada porque no encontramos una utilidad para ella en nuestros objetivos.
 
 
 # Importación de datos y carga de paquetes
@@ -73,7 +71,6 @@ library(flextable)
 library(knitr) 
 library(corrplot)
 library(dplyr)
-library (kableExtra)
 
 ```
 
@@ -93,45 +90,27 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
-<<<<<<< HEAD
-En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde el nombre de cada uno de los juegos, hasta los desarrolladores de cada uno de ellos.
-
-
 * `name`: Nombre del juego.
-      - Variable tipo: Identificador.
-      
+      - Identificador.
 * `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
-      - Variable tipo:Marca de tiempo.
-      
+      - Marca de tiempo.
 * `copiesSold`: Número de copias vendidas (Unidades).
-      - Variable tipo: Cuantitativa / Discreta.
-      
+      - Cuantitativa / Discreta.
 * `price`: Precio original del juego de salida ($).
-      - Variable tipo: Numérica / Discreta
-      
+      - Numérica / Discreta
 * `revenue`: Cantidad de dinero recaudada por el juego ($).
-      - Variable tipo: Cuantitativa / Discreta.
-      
+      - Cuantitativa / Discreta.
 * `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
-      - Variable tipo: Cuantitativa / Continua.
-      
+      - Cuantitativa / Continua.
 * `reviewScore`: Puntuación del juego en Steam (0-100).
-      - Variable tipo: Cuantitativa / Discreta.
-      
+      - Cuantitativa / Discreta.
 * `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
-      - Variable tipo: Cualitativa / Multinivel.
-      
+      - Cualitativa / Multinivel.
 * `publishers`: Empresa que se dedica a la publicación y marketing del juego.
-      - Variable tipo: Identificador.
-      
+      - Identificador.
 * `developers`: Empresa que se dedica a desarrollar y mantener el juego.
-      - Variable tipo: Identificador.
+      - Identificador.
       
-* `steamId`: Id de steam
-    - Variable tipo: Identificador.
-      
-      
->>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
 # Muestra del dataset
 
 Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. Este paso es crucial para familiarizarnos con el tipo de datos y para verificar que la importación se haya realizado correctamente. Utilizaremos funciones del paquete 'dplyr' para seleccionar las primeras 10 filas del dataframe 'lab', y luego el paquete 'gt' para presentar estos datos de una manera clara y estructurada.
@@ -444,59 +423,7 @@ ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) 
 ```
 
 
-### Estudio de la variable AVGPLAYTIME
-
-A continuación, nos enfocamos en el tiempo que dedican las personas a cada uno de los juegos.
-Una herramienta crucial para entender la distribución de nuestra variable cuantitativa es el histograma, ya que este gráfico nos permitirá observar la forma y la dispersión de los datos.
-
-Vamos a utilizar el color 'steelblue' para las barras, lo que nos permite observar la distribución de la variable de manera sencilla.
-
-```{r}
-# 'lab |> ggplot(aes(avgPlaytime)) +' inicia la construcción de un gráfico utilizando ggplot2 con datos del dataframe 'lab'.
-lab |> ggplot(aes(avgPlaytime)) +
-  # 'aes(avgPlaytime)' establece la estética del gráfico, asignando la variable 'avgPlaytime' del dataframe 'lab' al eje x.
-  
-  # 'geom_histogram()' añade un histograma al gráfico. Un histograma es útil para visualizar la distribución de una variable continua.
-  geom_histogram(
-    
-    fill = "steelblue",  # 'fill = "steelblue"' establece el color de relleno de las barras del histograma a azul acero.
-             
-    col = "white",      # 'col = "white"' define el color del borde de las barras del histograma como blanco.
-    breaks = seq(0,100, by = 10)
-  ) +
-  
-  # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
-  # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
-  theme_bw() +
-    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
-
-```
-Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
-
-
-A continuación, se crea una tabla de con los juegos que tienen más horas promedio jugadas.
-
-```{r}
-
-# Usar el dataframe 'Steam_2024_bestRevenue_1500'
-top_ten_games <- lab %>%
-  arrange(desc(avgPlaytime)) %>%  # Ordenar por avgPlayTime en orden descendente
-  slice(1:10) %>%                  # Seleccionar los 10 primeros
-  select(name, avgPlaytime) %>%    # Seleccionar solo las columnas 'name' y 'avgPlayTime'
-  mutate(avgPlaytime = round(avgPlaytime, 2))  # Redondear a dos decimales
-
-# Mostrar el resultado con kable
-top_ten_games |> 
-  kable(caption = "Los 10 juegos con más horas de juego") |> 
-  kable_styling(full_width = F)
-
-```
-
-
-
-
-### Estudio de la variable DEVELOPERS
-
+### Desarrolladores 
 
 Ahora vamos a analizar la variable "developers". 
 Realmente para nuestro estudio no es de gran importancia, aun así, crearemos una tabla de frecuencia para saber cuales son los 10 desarrolladores más frecuentes, ya que, puede ser curioso saberlo. 
@@ -535,8 +462,36 @@ table(lab$developers) |>
 
 ```
 
-En la tabla podemos observar claramente los 10 desarrolladores más frecuentes entre los 1407 desarrolladores únicos.
-Como ya hemos mencionado, esta variable no será de gran importancia a la hora de responder a nuestras preguntas y de cumplir nuestro objetivo final de la práctica.
+
+
+
+### Histogramas
+
+A continuación, nos enfocamos en los histogramas, una herramienta crucial para entender la distribución de nuestras variables cuantitativas. Estos gráficos nos permitirán observar la forma y la dispersión de los datos.
+
+Primero, generamos un histograma para la variable 'avgPlaytime', utilizando el color 'steelblue' para las barras, lo que nos permite observar la distribución de las horas que las personas le dedican a los videojuegos.
+
+```{r}
+# 'lab |> ggplot(aes(avgPlaytime)) +' inicia la construcción de un gráfico utilizando ggplot2 con datos del dataframe 'lab'.
+lab |> ggplot(aes(avgPlaytime)) +
+  # 'aes(avgPlaytime)' establece la estética del gráfico, asignando la variable 'avgPlaytime' del dataframe 'lab' al eje x.
+  
+  # 'geom_histogram()' añade un histograma al gráfico. Un histograma es útil para visualizar la distribución de una variable continua.
+  geom_histogram(
+    
+    fill = "steelblue",  # 'fill = "steelblue"' establece el color de relleno de las barras del histograma a azul acero.
+             
+    col = "white",      # 'col = "white"' define el color del borde de las barras del histograma como blanco.
+    breaks = seq(0,100, by = 10)
+  ) +
+  
+  # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
+  # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
+  theme_bw() +
+    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
+
+```
+Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
 
 
 
