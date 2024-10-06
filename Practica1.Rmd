@@ -79,7 +79,6 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 # Diccionario de datos
 
 En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde COMPLETAR.
-
 * `name`: Nombre del juego.
       - Identificador.
 * `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
@@ -100,7 +99,7 @@ En esta sección, presentamos un diccionario de datos que detalla cada variable 
       - Identificador.
 * `developers`: Empresa que se dedica a desarrollar y mantener el juego.
       - Identificador.
-
+      
 # Muestra del dataset
 
 Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. Este paso es crucial para familiarizarnos con el tipo de datos y para verificar que la importación se haya realizado correctamente. Utilizaremos funciones del paquete 'dplyr' para seleccionar las primeras 10 filas del dataframe 'lab', y luego el paquete 'gt' para presentar estos datos de una manera clara y estructurada.
@@ -264,7 +263,7 @@ A continuación, creamos otro histograma para 'price', esta vez utilizando un en
 
 
 
-#### Gráficos de barras
+### Gráficos de barras
 
 Ahora, visualizamos la distribución de las categorías mediante gráficos de barras. Estos gráficos son una herramienta efectiva para representar visualmente la frecuencia de cada categoría en nuestras variables categóricas.
 
@@ -388,8 +387,7 @@ lab |> ggplot(aes(avgPlaytime)) +
   # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
   # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
   theme_bw() +
-    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", 
-         title = "Distribución de tiempo de juego por intervalos")
+    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
 
 ```
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
