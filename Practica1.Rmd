@@ -52,6 +52,7 @@ library(flextable)
 library(knitr) 
 library(corrplot)
 library(dplyr)
+library (kableExtra)
 
 ```
 
@@ -88,7 +89,7 @@ En esta sección, presentamos un diccionario de datos que detalla cada variable 
 * `revenue``: recaudación.
     - Variable tipo: Cuantitativa / Discreta.
     
-* `avgPlayTime`: tiempo medio de juego.
+* `avgPlaytime`: tiempo medio de juego.
     - Variable tipo: Cuantitativa / Continua.
     
 * `reviewScore`: valoración.  
@@ -401,6 +402,25 @@ lab |> ggplot(aes(avgPlaytime)) +
 
 ```
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
+
+
+A continuación, se crea una tabla de con los juegos que tienen más horas promedio jugadas.
+
+```{r}
+
+# Usar el dataframe 'Steam_2024_bestRevenue_1500'
+top_ten_games <- lab %>%
+  arrange(desc(avgPlaytime)) %>%  # Ordenar por avgPlayTime en orden descendente
+  slice(1:10) %>%                  # Seleccionar los 10 primeros
+  select(name, avgPlaytime) %>%    # Seleccionar solo las columnas 'name' y 'avgPlayTime'
+  mutate(avgPlaytime = round(avgPlaytime, 2))  # Redondear a dos decimales
+
+# Mostrar el resultado con kable
+top_ten_games |> 
+  kable(caption = "Los 10 juegos con más horas de juego") |> 
+  kable_styling(full_width = F)
+
+```
 
 
 
