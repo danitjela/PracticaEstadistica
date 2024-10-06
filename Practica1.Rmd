@@ -22,7 +22,27 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los 1500 juegos más rentables lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024, utilizada para realizar un análisis descriptivo exhaustivo. Con este análisis nuestro equipo pretende realizar estimaciones sobre (COMPLETAR!!!).
+El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
+
+El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
+
+En cuanto a las preguntas, hemos planteado las siguientes:
+
+- ¿Los indies generan más dinero que los AA o AAA?
+- ¿El precio influye en la cantidad de copias vendidas?
+- ¿Es mayor el precio de los indies, de los AA o AAA?
+- ¿Hay mas jugadores en juegos indies, en AA o AAA?
+- ¿Tienen mejores criticas los indies, los AA o los AA?
+- ¿Juegos más largos tienen mejores valoraciones?
+- ¿Depende el precio de las críticas? 
+- ¿Es mejor juego un indie o un AA o AAA?
+- ¿Depende la fecha de salida con el numero de copias vendidas?
+- ¿Son más largos los indies, los AA o AAA?
+- ¿Depende el precio de la duración del juego?
+- ¿Depende la nota con el precio del juego?
+
+Cabe destacar que nos han sorprendido los datos de una variable, la valoración. Ya que hay bastantes juegos que tienen un 0. Esto puede ser debido a un error en la carga del dataset en la página web.
+Además, la variable steamId, no será utilizada porque no encontramos una utilidad para ella en nuestros objetivos.
 
 
 # Importación de datos y carga de paquetes
@@ -58,13 +78,27 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
-En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde COMPLETAR.
-
-* `a`: a
-* `a`: a
-* `a`: a
-* `a`: a
-
+* `name`: Nombre del juego.
+      - Identificador.
+* `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
+      - Marca de tiempo.
+* `copiesSold`: Número de copias vendidas (Unidades).
+      - Cuantitativa / Discreta.
+* `price`: Precio original del juego de salida ($).
+      - Numérica / Discreta
+* `revenue`: Cantidad de dinero recaudada por el juego ($).
+      - Cuantitativa / Discreta.
+* `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
+      - Cuantitativa / Continua.
+* `reviewScore`: Puntuación del juego en Steam (0-100).
+      - Cuantitativa / Discreta.
+* `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
+      - Cualitativa / Multinivel.
+* `publishers`: Empresa que se dedica a la publicación y marketing del juego.
+      - Identificador.
+* `developers`: Empresa que se dedica a desarrollar y mantener el juego.
+      - Identificador.
+      
 # Muestra del dataset
 
 Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. Este paso es crucial para familiarizarnos con el tipo de datos y para verificar que la importación se haya realizado correctamente. Utilizaremos funciones del paquete 'dplyr' para seleccionar las primeras 10 filas del dataframe 'lab', y luego el paquete 'gt' para presentar estos datos de una manera clara y estructurada.
