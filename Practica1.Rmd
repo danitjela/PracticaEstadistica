@@ -679,7 +679,101 @@ flextable(tabla_frecuencias) |>
 
 Ahora, exploraremos las relaciones bivariantes en nuestro conjunto de datos, observando cómo las variables interactúan entre sí. Esto incluye examinar las relaciones entre pares de variables tanto discretas como continuas.
 
-### Tablas de contingencia: Variables discretas
+### Estudio de las variables PRICE Y REVENUE
+En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra.
+
+```{r}
+
+  # Convertir las variables continuas en categorías, con intervalos cerrados a la izquierda y abiertos a la derecha
+  lab$logrevenue <- log10(lab$revenue)
+
+  # Definir los intervalos logarítmicos
+  # Elige un rango adecuado en la escala logarítmica para crear los intervalos.
+  lab$revenue_cat_log <- cut(lab$logrevenue, breaks = seq(floor(min(lab$logrevenue)), 
+                                       ceiling(max(lab$logrevenue)), by = 0.5), include.lowest = TRUE, right = FALSE)
+  
+  # Crear etiquetas para los intervalos con el formato logarítmico y su equivalente en la escala original
+  # Usamos 'paste0' para crear etiquetas que incluyan ambas escalas.
+  lab$revenue_intervalos_etiquetas <- sapply(levels(lab$revenue_cat_log), function(x) {
+    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
+    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
+  })
+
+  # Reemplazar los niveles de 'copiesSold_intervalos_log' por las nuevas etiquetas
+  levels(lab$revenue_cat_log) <- lab$revenue_intervalos_etiquetas
+  
+  price_cat <- cut(lab$price, breaks = seq(0, 100, by = 5), right = FALSE)  # 4 intervalos para y
+  
+  # Tabla de frecuencias absolutas
+  tabla_abs_priceRevenue <- table(lab$revenue_cat_log, price_cat)
+  
+  # Frecuencias relativas (porcentajes)
+  tabla_rel_priceRevenue <- prop.table(tabla_abs_priceRevenue) * 100
+  
+  # Crear tabla combinada con frecuencias absolutas y relativas
+  tabla_contingencia_priceRevenue <- matrix(paste(tabla_abs_priceRevenue, "(", round(tabla_rel_priceRevenue, 2), "%)", sep = ""),
+                            nrow = nrow(tabla_abs_priceRevenue), ncol = ncol(tabla_abs_priceRevenue))
+  
+  # Asignar nombres a filas y columnas
+  rownames(tabla_contingencia_priceRevenue) <- rownames(tabla_abs_priceRevenue)
+  colnames(tabla_contingencia_priceRevenue) <- colnames(tabla_abs_priceRevenue)
+  
+  # Mostrar la tabla combinada
+  kable(tabla_contingencia_priceRevenue)
+  
+```
+Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0$ y 20$).
+
+Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica beneficios menores.
+
+
+A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal.
+
+```{r}
+lab |>
+  ggplot(aes(x = logrevenue, y = price)) +
+  geom_point() +
+  geom_smooth() +
+  labs(title = "Gráfico de dispersión con ajuste de regresión")
+```
+```{r}
+lab |> 
+  ggplot(aes(x = logrevenue, y = price)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(title = "Gráfico de dispersión con ajuste de regresión lineal")
+```
+En cuanto a los distintos ajustes de la recta, no hay una diferencia significativa entre un método y el otro. Según ambas rectas, a simple vista podemos denotar un aumento positivo y progresivo de los beneficios en cuanto al aumento del precio.
+
+
+Para mayor comprensión de ambos gráficos, mostramos el siguiente resumen numérico:
+
+```{r}
+  summary(lab |> select(logrevenue, price) |> with(lm(logrevenue ~ price)))
+```
+
+Aproximadamente, a través de los valores del resumen (Estimate Std (logrevenue) = 4.82304 // Estimate Std (price) = 0.02350) la recta en términos logarítmicos de nuestro modelo ajustado es la siguiente:
+
+`logrevenue = 0.02 × price + 4.82`
+
+
+Despejando el logaritmo, para una mejor interpretación, nos queda la siguiente recta:
+
+`revenue = (e ^ (0.02 * price)) × 123.97` 
+
+ó
+
+`revenue = (1.02 ^ price) × 123.97`
+
+Lo que indica una función exponencial creciente, donde a más aumentan los precios, los ingresos aumentan drásticamente; asímismo, con precios inferiores los ingresos incrementan muy lentamente. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería 123.97$.
+
+Analizando más valores del resumen tenemos que el modelo es altamente significativo estadísticamente para el estudio de la muestra debido a que el valor F-statistic (281.7) es alto  y el p-value (< 2.2e-16) es bajo; además, se trata de un modelo altamente preciso ya que el valor del Residual standard error(0.6856) es muy cercano al valor ideal (entorno a 0). 
+
+Por último, en cuanto a correlación de una variable con otra y predictibilidad del modelo creado, el valor R-squared (0.1583) indica que el 15.83% de la variabilidad en el logaritmo de los ingresos es explicada por el precio, el cual no es un porcentaje extremadamente alto. Esto sugiere que, si bien el precio afecta los ingresos, hay otros factores que también influyen en los ingresos que no están considerados en el modelo.
+
+
+
+
 
 Primero, analizaremos las variables discretas creando tablas de contingencia, que nos ayudarán a entender las relaciones entre distintas categorías.
 
