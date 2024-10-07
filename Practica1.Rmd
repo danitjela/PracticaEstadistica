@@ -491,8 +491,99 @@ top_ten_games |>
   kable_styling(full_width = F)
 
 ```
+### Estudio de la variable REVIEWSCORE
+
+```{r}
+
+num_respuestas_SCORE <- length(unique(lab$reviewScore))
+cat("La cantidad de respuestas obtenidas es:", num_respuestas_SCORE)
+
+```
+
+Esta variable tiene sentido estudiarla para más adelante poder ver como se relaciona con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas.
+
+```{r}
+
+tabla_frecuencias_score <- lab |>
+  count(reviewScore) |>
+  mutate(f = n / nrow(lab), N = cumsum(n), F = cumsum(f))
+tabla_frecuencias_ordenada4 <- tabla_frecuencias_score |> 
+  arrange(desc(n))
+tabla_frecuencias_ordenada4$F <- cumsum(tabla_frecuencias_ordenada4$f)
+tabla_frecuencias_ordenada4$N <- cumsum(tabla_frecuencias_ordenada4$n)
+print(tabla_frecuencias_ordenada4)
+
+```
+
+A continuación, realizaremos un histograma mediante el siguiente código.
+
+```{r}
+
+datos <- lab$reviewScore 
+ggplot(data.frame(x = datos), aes(x = x)) +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black", 
+                 aes(y = ..density..), alpha = 0.6) +
+  stat_function(fun = dnorm, args = list(mean = mean(datos), 
+                                         sd = sd(datos)), color = "red", size = 1.5) +
+  labs(title = "Distribución de las puntuaciones",
+       x = "Puntuación",
+       y = "Frecuencia") 
+
+```
+
+Además de este histograma debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
+
+```{r}
+
+lab |> select(reviewScore) |> descr() |> kable(digits = 2)
+
+```
+
+Lo primero que llama la atención en el histograma, es la cantidad de puntuaciones 0 que hay. Esto hace que la moda disminuya mucho, ya que sin esos valores, sería mucho más alta. Además se puede observar que la mayoria de notas están comprendidas entre 66 y 100 de puntuación, obviando el 0.
+
+### Estudio de la variable PUBLISHERCLASS
+
+Ahora analizaremos la variable "publisherclass". En esta variable, veremos las diferencias entre los tipos de empresas que hay y como se distribuyen. A continuación, con el siguiente código estudiaremos las frecuencias relativas y absolutas.
+
+```{r}
+
+# Calcular las frecuencias absolutas y relativas
+tabla_frecuencias_publisherclass <- lab |>
+  count(publisherClass) |>
+  mutate(f = n / nrow(lab)) 
 
 
+# Mostrar la tabla
+print(tabla_frecuencias_ordenada3)
+
+```
+
+Para observar estos datos con mayor claridad, utilizaremos una gráfica en función de la frecuencia relativa con el siguiente código.
+
+```{r}
+
+lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+Además, se puede hacer un gráfico con las frecuencias abosultas mediante el siguiente código.
+
+```{r}
+
+lab |>
+  group_by(publisherClass) |>
+  summarise(Frequency = n()) |>
+  mutate(publisherClass = reorder(publisherClass, -Frequency)) |>
+  ggplot(aes(x = publisherClass, y = Frequency)) +
+  geom_bar(stat = "identity", aes(fill = Frequency)) +
+  theme_bw() +
+  labs(title = "Gráfico de barras con frecuencia absoluta de TYPE",
+       x = "Tipo de casa",
+       y = "Frecuencia absoluta") +
+  scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se puede observar un caso asilado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.  
 
 
 ### Estudio de la variable DEVELOPERS
