@@ -770,6 +770,48 @@ flextable(tabla_frecuencias) |>
 
 Ahora, exploraremos las relaciones bivariantes en nuestro conjunto de datos, observando cómo las variables interactúan entre sí. Esto incluye examinar las relaciones entre pares de variables tanto discretas como continuas.
 
+### Estudio de las variables PUBLISHERCLASS Y REVENUE
+En este apartado, queremos comprobar si el tipo de empresa afecta a la recaudación. Para ello, vamos a utilizar una gráfica box-plot y un gráfico de barras para que sea más visual.
+
+```{r}
+
+ggplot(lab, aes(x = publisherClass, y = revenue)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "steelblue") +  # Barras que muestran la media
+  labs(title = "Recaudación por tipo de empresa",
+       x = "Tipo de empresa",
+       y = "Recaudación promedio") 
+
+```
+
+Como se puede observar, los juegos que menos recaudan, son los de empresa tipo "Indie", a pesar de que estos son la mayoría de los juegos que salen. A continuación, realizaremos una gráfica box-plot para analizar mejor los datos. Por otra parte, esta el tipo "Hobbyist", que no tiene sentido analizar debido a que es una única prueba, y el objetivo de ese tipo de empresa no es la recaudación de dinero.
+
+```{r}
+
+ggplot(lab, aes(x = publisherClass, y = revenue)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue") +
+  labs(title = "Distribución de la Recaudación por Tipo de Empresa",
+       x = "Tipo de Empresa",
+       y = "Recaudación") +
+  theme_minimal()
+
+```
+Debido a la disparidad entre las muestras que tenemos, necesitaremos aplicar una escala logarítmica para evitar la asimetría en dichas muestras ya que la distribuición es muy sesgada.
+
+```{r}
+
+ggplot(lab, aes(x = publisherClass, y = revenue)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue") +
+  scale_y_log10() +  # Aplica una escala logarítmica al eje Y
+  labs(title = "Distribución de la Recaudación por Tipo de Empresa (Escala Logarítmica)",
+       x = "Tipo de Empresa",
+       y = "Recaudación (log)") +
+  theme_minimal()
+
+```
+
+Aquí podemos observar como sí hay juegos "Indie" con una recaudación superior a la media del resto de empresas, pero son casos aislados y la mayor parte de los "Indies", generan mucho menos que los juegos "AAA" y "AA". 
+
+
 ### Estudio de las variables PRICE Y REVENUE
 En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra.
 
