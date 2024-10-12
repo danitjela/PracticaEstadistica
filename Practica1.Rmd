@@ -34,9 +34,9 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 
 `- ¿Es mayor el precio de los indies, de los AA o AAA?`
 
-`- ¿Hay mas jugadores en juegos indies, en AA o AAA?`
+`- ¿Hay más jugadores en juegos indies, en AA o AAA?`
 
-`- ¿Tienen mejores criticas los indies, los AA o los AA?`
+`- ¿Tienen mejores críticas los indies, los AA o los AAA?`
 
 `- ¿Juegos más largos tienen mejores valoraciones?`
 
@@ -44,7 +44,7 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 
 `- ¿Es mejor juego un indie o un AA o AAA?`
 
-`- ¿Depende la fecha de salida con el numero de copias vendidas?`
+`- ¿Depende la fecha de salida con el número de copias vendidas?`
 
 `- ¿Son más largos los indies, los AA o AAA?`
 
@@ -53,7 +53,7 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 `- ¿Depende la nota con el precio del juego?`
 
 
-También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
+También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen una valoración de 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
 
 
 # Importación de datos y carga de paquetes
@@ -381,7 +381,7 @@ cat("La cantidad de respuestas obtenidas es:", num_respuestas_SCORE)
 
 ```
 
-Esta variable tiene sentido estudiarla para más adelante poder ver como se relaciona con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas.
+Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas.
 
 ```{r}
 
@@ -402,7 +402,7 @@ A continuación, realizaremos un histograma mediante el siguiente código.
 
 datos <- lab$reviewScore 
 ggplot(data.frame(x = datos), aes(x = x)) +
-  geom_histogram(binwidth = 1, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "black", 
                  aes(y = ..density..), alpha = 0.6) +
   stat_function(fun = dnorm, args = list(mean = mean(datos), 
                                          sd = sd(datos)), color = "red", size = 1.5) +
@@ -443,24 +443,7 @@ Para observar estos datos con mayor claridad, utilizaremos una gráfica en funci
 lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-Además, se puede hacer un gráfico con las frecuencias abosultas mediante el siguiente código.
 
-```{r}
-
-lab |>
-  group_by(publisherClass) |>
-  summarise(Frequency = n()) |>
-  mutate(publisherClass = reorder(publisherClass, -Frequency)) |>
-  ggplot(aes(x = publisherClass, y = Frequency)) +
-  geom_bar(stat = "identity", aes(fill = Frequency)) +
-  theme_bw() +
-  labs(title = "Gráfico de barras con frecuencia absoluta de TYPE",
-       x = "Tipo de casa",
-       y = "Frecuencia absoluta") +
-  scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-```
 Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se puede observar un caso asilado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.  
 
 
@@ -787,7 +770,7 @@ Debido a la disparidad entre las muestras que tenemos, necesitaremos aplicar una
 
 ggplot(lab, aes(x = publisherClass, y = revenue)) +
   geom_boxplot(fill = "lightblue", color = "darkblue") +
-  scale_y_log10() +  # Aplica una escala logarítmica al eje Y
+  scale_y_log10() +  
   labs(title = "Distribución de la Recaudación por Tipo de Empresa (Escala Logarítmica)",
        x = "Tipo de Empresa",
        y = "Recaudación (log)") +
