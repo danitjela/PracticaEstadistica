@@ -145,6 +145,31 @@ Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos
 
 ### Estudio de la variable RELEASEDATE
 
+Para el estudio de la variable "releaseDate" crearemos un histograma, donde se agruparán las fechas de salida de cada videojuego en meses (desde enero hasta septiembre de este mismo año), y determinaremos cuál han sido los con más y menos lanzamientos.
+
+```{r}
+lab <- lab |> 
+  mutate(releaseDate = as.Date(releaseDate, format = "%d-%m-%Y"))
+
+lab <- lab |> 
+  mutate(mes = format(releaseDate, "%m"), 
+         mes = factor(mes, levels = sprintf("%02d", 1:12), labels = month.abb))
+
+lanzamientos_mes <- lab |> 
+  group_by(mes) |> 
+  summarise(n_juegos = n(), .groups = 'drop')
+
+  ggplot(lanzamientos_mes, aes(x = mes, y = n_juegos, fill = n_juegos)) +
+    geom_bar(stat = "identity", color = "black", alpha = 0.8) +
+    scale_fill_gradient2(low = "steelblue", mid = "skyblue", high = "red", midpoint = median(lanzamientos_mes$n_juegos)) +
+    theme_bw() +
+    labs(title = "Distribución de las fechas de lanzamiento",
+         x = "Mes",
+         y = "Nº Lanzamientos")
+```
+
+Según el gráfico podemos decir que los meses con más lanzamientos han sido: 1º -> Mayo, 2º -> Abril, 3º -> Marzo. Mientras tanto los meses con menos lanzamientos han sido: 1º -> Septiembre (ya que los datos van desde principios de este año hasta el 9 de septiembre), 2º -> Enero, 3º -> Agosto.
+
 
 ### Estudio de la variable COPIESSOLD
 
@@ -407,7 +432,7 @@ tabla_frecuencias_publisherclass <- lab |>
   count(publisherClass) |>
   mutate(f = n / nrow(lab)) 
 
-print(tabla_frecuencias_ordenada3)
+print(tabla_frecuencias_publisherclass)
 
 ```
 
@@ -479,8 +504,90 @@ Como ya hemos mencionado, esta variable no será de gran importancia a la hora d
 
 ## Datos bivariantes
 
-### Estudio de las variables COPIAS Y REVENUE
+### Estudio de las variables COPIESSOLD Y REVENUE
 
+Antes de comenzar con el analisis bivariante de "copiesSold" y "revenue" vamos a hacer un resumen de ambas variables para saber la cantidad de copias vendidas y la recaudación promedio, los valores mínimos y máximos, o los valores faltantes en caso de que los haya. Esto se hace con el objetivo de conocer mejor sus valores y distribución.
+
+```{r}
+
+sum(is.na(lab$copiesSold))
+sum(is.na(lab$revenue))
+
+summary(lab$copiesSold)
+summary(lab$revenue)
+```
+
+A continuación, vamos a realizar un gráfico de dispersión para así saber si hay una relación visual en ambas variables.
+```{r}
+ggplot(lab, aes(x = copiesSold, y = revenue)) +
+  geom_jitter(color = "blue", size = 1, width = 0.2, height = 0, alpha = 0.7) +
+  scale_y_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  scale_x_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  labs(title = "Relación entre Copias Vendidas y Recaudación",
+       x = "Copias Vendidas",
+       y = "Recaudación (en logaritmos)") +
+  theme_minimal()
+```
+
+Tras esto, calcularemos la correlación entre "copiesSold" y "revenue" para determinar si su relación es fuerte o débil, y representaremos el resultado en forma de tabla.
+
+```{r}
+correlacion <- cor(lab$copiesSold, lab$revenue, use = "complete.obs")
+
+correlacion_df <- data.frame(Variable1 = "copiesSold", 
+                             Variable2 = "revenue", 
+                             Correlacion = round(correlacion, 2))
+correlacion_df %>%
+  kable(caption = "Correlación entre las copias vendidas y la recaudación") %>%
+  kable_styling(full_width = F)
+```
+
+El resultado de la correlación es de 0.63, lo que indica una relación positiva significativa, aunque no muy fuerte. 
+
+Por último, se realizará un modelo de regresión lineal para analizar cómo cambia la recaudación en función de las copias vendidas.
+
+```{r}
+
+modelo <- lm(revenue ~ copiesSold, data = lab)
+
+summary(modelo)
+
+ggplot(lab, aes(x = copiesSold, y = revenue)) +
+  geom_point(size = 2, alpha = 0.7) +  
+  geom_smooth(method = "lm", color = "blue") +
+  scale_x_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  scale_y_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  labs(title = "Regresión Lineal: Copias Vendidas vs Recaudación",
+       x = "Copias Vendidas",
+       y = "Recaudación (en miles de dólares)") +
+  theme_minimal()
+```
+
+Como se puede observar, las variables "copiesSold" y "revenue" se relacionan cuando el número de copias vendidas es inferior a 5 millones. La recaudación depende, aunque no exclusivamente, de las copias vendidas, pero a medida que se venden más copias, la relación entre ambas variables se vuelve más débil.
 
 ### Estudio de las variables PRICE Y REVENUE
 En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra.
