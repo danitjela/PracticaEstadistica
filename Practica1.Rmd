@@ -327,6 +327,26 @@ En definitiva, se trata de una distribución con pocos valores significativos y 
 
 ### Estudio de la variable REVENUE
 
+Analizamos la variable "revenue" mediante un histograma de los beneficios que nos muestra la distribución de los beneficios que obtienen estos videojuegos.
+
+```{r}
+ggplot(lab, aes(x = revenue)) +
+
+  geom_histogram(binwidth = 2000000, fill = "blue", color = "black") +
+
+  labs(title = "Distribución de los Beneficios de los Videojuegos",
+
+       x = "Beneficios ($)",
+       y = "Frecuencia") +
+
+  ylim(0, 200) +  # Establece el rango del eje Y de 0 a 500
+  xlim(0, 50000000) +  # Limita el rango del eje X a 50 millones
+
+  theme_minimal()
+
+```
+En este histograma vemos la alta concentración de videojuegos con bajos beneficios, son menos frecuentes los juegos que alcanzan beneficios entre los 10 y los 50 millones. La gráfica muestra una clara asimetría con la cantidad que ganan poco y los pocos que obtienen grandes ingresos.
+
 
 ### Estudio de la variable AVGPLAYTIME
 
@@ -449,6 +469,31 @@ Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "In
 
 ### Estudio de la variable PUBLISHERS
 
+A continuación analizamos la variable "publishers" mediante un gráfico de barras que muestra la frecuencia de los 10 publishers más representativos según la cantidad de juegos publicados en Steam. Primero contamos los videojuegos por publisher y seleccionamos los 10 más comunes y luego creamos en gráfico de barras con esos datos.
+
+```{r}
+
+top_publishers <- lab %>%
+
+  count(publishers) %>%
+
+  top_n(10, n)  
+
+ggplot(top_publishers, aes(x = reorder(publishers, n), y = n)) +
+
+  geom_bar(stat = "identity", fill = "blue", color = "black") +
+
+  labs(title = "Top 10 Publishers por Número de Videojuegos",
+
+       x = "Publisher",
+       y = "Número de Videojuegos") +
+
+  theme_minimal() +
+  coord_flip()  
+
+```
+
+En esta gráfica podemos ver los 10 publishers que tienen una influencia notable en Steam debido al volumen de títulos publicados.
 
 ### Estudio de la variable DEVELOPERS
 
@@ -737,6 +782,46 @@ A modo de conclusión podemos decir que el tiempo de juego influye de forma mín
 
 
 ### Estudio de las variables REVIEWSCORE Y REVENUE
+A continuación vamos a analizar  si la puntuación asociada al videojuego afecta realmente a la recaudación. Para ello vamos a utilizar una gráfica de dispersión mediante la cual se verá la cantidad de videojuegos beneficiados por su puntuación.
+
+```{r}
+
+ggplot(data = lab, aes(x = reviewScore, y = revenue)) +
+
+  geom_point(alpha = 0.5) +  
+
+  labs(title = "Relación entre Puntuación y Recaudación",
+
+       x = "Puntuación",
+       y = "Recaudación") +
+
+  theme_minimal()  # Usar un tema minimalista
+
+```
+
+Podemos apreciar cómo la mayoría de puntos se agrupan en la parte baja de la gráfica indicando que pese a  la puntuación alta que puedan tener, son pocos los que tienen recaudaciones altas. Lo que sí queda claro es que de los juegos con poca puntuación, ninguno sobresale. De todas formas comprobemos mediante un análisis de regresión para obtener un modelo cuantitativo.
+
+```{r}
+
+modelo <- lm(revenue ~ reviewScore, data = lab) 
+
+summary(modelo)  
+
+ggplot(data = lab, aes(x = reviewScore, y = revenue)) +
+
+  geom_point(alpha = 0.5) +  
+
+  geom_smooth(method = "lm", color = "blue") +  
+
+  labs(title = "Relación entre Puntuación y Recaudación con Línea de Regresión",
+
+       x = "Puntuación",
+       y = "Recaudación") +
+
+  theme_minimal()
+
+```
+Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación  que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
 
 
 ### Estudio de las variables PUBLISHERCLASS Y REVENUE
