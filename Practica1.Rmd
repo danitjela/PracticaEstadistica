@@ -28,30 +28,15 @@ El principal objetivo de nuestro estudio estadístico es dar respuesta a una ser
 
 En cuanto a las preguntas, hemos planteado las siguientes:
 
-`- ¿Los indies generan más dinero que los AA o AAA?`
+`- ¿Los indies recaudan más dinero que los AA o AAA?`
 
-`- ¿El precio influye en la cantidad de copias vendidas?`
+`- ¿Los juegos que venden más copias recaudan más dinero?`
 
-`- ¿Es mayor el precio de los indies, de los AA o AAA?`
+`- ¿Los juegos más caros recaudan más dinero que los baratos?`
 
-`- ¿Hay más jugadores en juegos indies, en AA o AAA?`
+`- ¿Los juegos más largos recaudan más dinero que los que son más cortos?`
 
-`- ¿Tienen mejores críticas los indies, los AA o los AAA?`
-
-`- ¿Juegos más largos tienen mejores valoraciones?`
-
-`- ¿Depende el precio de las críticas?`
-
-`- ¿Es mejor juego un indie o un AA o AAA?`
-
-`- ¿Depende la fecha de salida con el número de copias vendidas?`
-
-`- ¿Son más largos los indies, los AA o AAA?`
-
-`- ¿Depende el precio de la duración del juego?`
-
-`- ¿Depende la nota con el precio del juego?`
-
+`- ¿Los juegos con buenas valoraciones recaudan más que los que tienen peor puntuación?`
 
 También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen una valoración de 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
 
@@ -160,7 +145,7 @@ lanzamientos_mes <- lab |>
   summarise(n_juegos = n(), .groups = 'drop')
 
   ggplot(lanzamientos_mes, aes(x = mes, y = n_juegos, fill = n_juegos)) +
-    geom_bar(stat = "identity", color = "black", alpha = 0.8) +
+    geom_bar(stat = "identity", color = "white", alpha = 0.8) +
     scale_fill_gradient2(low = "steelblue", mid = "skyblue", high = "red", midpoint = median(lanzamientos_mes$n_juegos)) +
     theme_bw() +
     labs(title = "Distribución de las fechas de lanzamiento",
@@ -218,7 +203,7 @@ Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muest
 ```{r}
 
   ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 0.15, fill = "steelblue", color = "white", 
                  aes(y = ..count../sum(..count..), alpha = 0.6)) +
   stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
                 sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
@@ -232,7 +217,7 @@ Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muest
 ```{r}
 
   ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 0.15, fill = "steelblue", color = "white", 
                  aes(y = ..density..), alpha = 0.6) +
   stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
                 sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
@@ -290,7 +275,7 @@ Realmente no hay un precio que destaque en la muestra, ya que se trata de valore
 ```{r}
 
   ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white", 
                  aes(y = ..count../sum(..count..), alpha = 0.6)) +
   stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
                 sd = sd(lab$price)), color = "red", size = 1.5) +
@@ -304,7 +289,7 @@ Realmente no hay un precio que destaque en la muestra, ya que se trata de valore
 ```{r}
 
   ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white", 
                  aes(y = ..density..), alpha = 0.6) +
   stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
                 sd = sd(lab$price)), color = "red", size = 1.5) +
@@ -332,7 +317,7 @@ Analizamos la variable "revenue" mediante un histograma de los beneficios que no
 ```{r}
 ggplot(lab, aes(x = revenue)) +
 
-  geom_histogram(binwidth = 2000000, fill = "blue", color = "black") +
+  geom_histogram(binwidth = 2000000, fill = "steelblue", color = "white") +
 
   labs(title = "Distribución de los Beneficios de los Videojuegos",
 
@@ -422,7 +407,7 @@ A continuación, realizaremos un histograma mediante el siguiente código.
 
 datos <- lab$reviewScore 
 ggplot(data.frame(x = datos), aes(x = x)) +
-  geom_histogram(binwidth = 1, fill = "steelblue", color = "black", 
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white", 
                  aes(y = ..density..), alpha = 0.6) +
   stat_function(fun = dnorm, args = list(mean = mean(datos), 
                                          sd = sd(datos)), color = "red", size = 1.5) +
@@ -460,7 +445,7 @@ Para observar estos datos con mayor claridad, utilizaremos una gráfica en funci
 
 ```{r}
 
-lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "steelblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
 
@@ -481,7 +466,7 @@ top_publishers <- lab %>%
 
 ggplot(top_publishers, aes(x = reorder(publishers, n), y = n)) +
 
-  geom_bar(stat = "identity", fill = "blue", color = "black") +
+  geom_bar(stat = "identity", fill = "steelblue", color = "white") +
 
   labs(title = "Top 10 Publishers por Número de Videojuegos",
 
