@@ -386,12 +386,19 @@ cat("La cantidad de respuestas obtenidas es:", num_respuestas_SCORE)
 
 ```
 
-Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas.
+Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas por rangos debido a la cantida de valores que hay.
 
 ```{r}
 
+max_val <- max(lab$reviewScore)
+max_val <- min(max_val, 100)
+lab$reviewScore_rango <- cut(lab$reviewScore, 
+                             breaks = c(0, 1, seq(5, max_val, by = 5)),
+                             right = FALSE, 
+                             include.lowest = TRUE,
+                             labels = c("0", paste(seq(1, max_val-4, by = 5), seq(5, max_val, by = 5)-1, sep = "-")))
 tabla_frecuencias_score <- lab |>
-  count(reviewScore) |>
+  count(reviewScore_rango) |>
   mutate(f = n / nrow(lab), N = cumsum(n), F = cumsum(f))
 tabla_frecuencias_ordenada4 <- tabla_frecuencias_score |> 
   arrange(desc(n))
@@ -401,11 +408,19 @@ print(tabla_frecuencias_ordenada4)
 
 ```
 
+Como se puede observar hay bastantes valores de 0 que como hemos comentado debe tratarse de un error. Por ello, lo hemos sacado fuera de los rangos y para continuar con el estudio, eliminaremos ese valor para poder realizarlo de una manera más fiel a la realidad. Para esto, utilizaremos el siguiente código.
+
+```{r}
+
+labNo0 <- subset(lab, reviewScore != 0)
+
+```
+
 A continuación, realizaremos un histograma mediante el siguiente código.
 
 ```{r}
 
-datos <- lab$reviewScore 
+datos <- labNo0$reviewScore 
 ggplot(data.frame(x = datos), aes(x = x)) +
   geom_histogram(binwidth = 1, fill = "steelblue", color = "white", 
                  aes(y = ..density..), alpha = 0.6) +
@@ -417,15 +432,15 @@ ggplot(data.frame(x = datos), aes(x = x)) +
 
 ```
 
-Además de este histograma debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
+Además de este histograma, debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
 
 ```{r}
 
-lab |> select(reviewScore) |> descr() |> kable(digits = 2)
+labNo0 |> select(reviewScore) |> descr() |> kable(digits = 2)
 
 ```
 
-Lo primero que llama la atención en el histograma, es la cantidad de puntuaciones 0 que hay. Esto hace que la moda disminuya mucho, ya que sin esos valores, sería mucho más alta. Además se puede observar que la mayoria de notas están comprendidas entre 66 y 100 de puntuación, obviando el 0.
+Podemos observar como las puntuaciones por lo general, son extremadamente altas. Esto se puede deber a que el dataset es sobre los 1500 mejores juegos según su recaudación, por lo que podemos entender que son buenos juegos. Además, estas valoraciones son puestas por los usuarios y no por críticos profesionales.
 
 ### Estudio de la variable PUBLISHERCLASS
 
