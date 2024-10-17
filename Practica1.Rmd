@@ -758,26 +758,6 @@ El gráfico muestra una concentración de juegos con un tiempo promedio bajo (ce
 Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
 
 
-Por último, para determinar de forma definitiva si el tiempo promedio de juego es un buen predictor de ingresos, vamos a observar un modelo de regresión.
-
-```{r}
-
-modelo <- lm(lab$revenue ~ lab$avgPlaytime)
-summary(modelo)  
-
-```
-
-
-El valor estimado de Intercept es 1,295,594, lo que significa que si el tiempo promedio de juego fuera 0, la recaudación promedio  sería de aproximadamente 1.3 millones de unidades monetarias.
-
-La pendiente es 106,409, lo que significa que por cada hora adicional de tiempo promedio de juego, la recaudación promedio aumenta en 106,409 unidades monetarias.
-
-El valor p para avgPlaytime es 0.0014, lo que indica que hay una relación significativa entre las variables con un nivel de confianza del 99.86% (muy significativo dado que p<0.01).
-
-Esto significa que el efecto de avgPlaytime en revenue no es probablemente debido al azar.
-
-El R^2 es 0.006794, lo que indica que el tiempo promedio de juego explica solo el 0.68% de la variabilidad en los ingresos. Esto es muy bajo, lo que sugiere que hay otros factores importantes que afectan la recaudación y que el tiempo de juego por sí solo no es un buen predictor.
-
 A modo de conclusión podemos decir que el tiempo de juego influye de forma mínima en la recaudación.
 
 
