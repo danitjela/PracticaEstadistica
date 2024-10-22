@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
+El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los 1500 juegos con más beneficios obtenidos, concretamente, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
 
 El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
 
@@ -39,6 +39,8 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 `- ¿Los juegos con buenas valoraciones recaudan más que los que tienen peor puntuación?`
 
 También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen una valoración de 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
+
+Además, vamos a descartar del estudio la variable "steamId", ya que no nos aporta ningún tipo de información relevante para nuestro objetivo.
 
 
 # Importación de datos y carga de paquetes
@@ -76,36 +78,36 @@ En esta sección, presentamos un diccionario de datos que detalla cada variable 
 
 
 * `name`: Nombre del juego.
-      - Variable tipo: Identificador.
+    - Variable tipo: Identificador.
       
 * `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
-      - Variable tipo:Marca de tiempo.
+    - Variable tipo: Marca de tiempo.
       
 * `copiesSold`: Número de copias vendidas (Unidades).
-      - Variable tipo: Cuantitativa / Discreta.
+    - Variable tipo: Cuantitativa / Discreta.
       
 * `price`: Precio original del juego de salida ($).
-      - Variable tipo: Numérica / Discreta
+    - Variable tipo: Cuantitativa / Continua
       
 * `revenue`: Cantidad de dinero recaudada por el juego ($).
-      - Variable tipo: Cuantitativa / Discreta.
+    - Variable tipo: Cuantitativa / Continua
       
 * `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
-      - Variable tipo: Cuantitativa / Continua.
+    - Variable tipo: Cuantitativa / Continua.
       
 * `reviewScore`: Puntuación del juego en Steam (0-100).
-      - Variable tipo: Cuantitativa / Discreta.
+    - Variable tipo: Cuantitativa / Discreta.
       
 * `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
-      - Variable tipo: Cualitativa / Multinivel.
+    - Variable tipo: Cualitativa / Multinivel.
       
 * `publishers`: Empresa que se dedica a la publicación y marketing del juego.
-      - Variable tipo: Identificador.
+    - Variable tipo: Identificador.
       
 * `developers`: Empresa que se dedica a desarrollar y mantener el juego.
-      - Variable tipo: Identificador.
+    - Variable tipo: Identificador.
       
-* `steamId`: Id de steam
+* `steamId`: Id de Steam
     - Variable tipo: Identificador.
       
     
@@ -159,30 +161,22 @@ Según el gráfico podemos decir que los meses con más lanzamientos han sido: 1
 
 ### Estudio de la variable COPIESSOLD
 
-Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
+Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. 
 
 ```{r}
 
-  lab$logCopiesSold <- log10(lab$copiesSold)
+  copiesSold_breaks <- c(500, 5000, 10000, 15000, 25000, 50000, 100000, 1000000, 5000000, 10000000, 31000000)
+  copiesSold_labels <- c("[500-5k]", "(5k-10k]", "(10k-15k]", "(15k-25k]", "(25k-50k]", "(50k-100k]", "(100k-1M]", "(1M-5M]", "(5M-10M]", "(10M-31M]")
 
-  lab$copiesSold_intervalos_log <- cut(lab$logCopiesSold, breaks = seq(floor(min(lab$logCopiesSold)), 
-                                       ceiling(max(lab$logCopiesSold)), by = 0.5), include.lowest = TRUE, right = FALSE)
+  lab$copiesSold_intervalos <- cut(lab$copiesSold, breaks = copiesSold_breaks, labels = copiesSold_labels, include.lowest = TRUE)
 
-  lab$copiesSold_intervalos_etiquetas <- sapply(levels(lab$copiesSold_intervalos_log), function(x) {
-    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
-    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
-  })
-
-  levels(lab$copiesSold_intervalos_log) <- lab$copiesSold_intervalos_etiquetas
-
-  table(lab$copiesSold_intervalos_log) |> 
+  
+  table(lab$copiesSold_intervalos) |> 
   
   as.data.frame() |> 
 
   mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
-
-  arrange(desc(Freq)) |>
-
+  
   gt() |> 
 
   tab_header(
@@ -199,36 +193,45 @@ Primero, generamos una tabla de frecuencias y un histograma agrupando la variabl
   tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) 
   
 ```
+Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en los primeros intervalos hasta los 5M de ventas, por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos.
 
-
-Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en el intervalo [3.5,4.5), por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos con muchos outliers (como ya se había presupuesto previamente). Como resultado, los valores más significativos son: entre las 3162 y 10000 ventas (31%) y entre las 10000 y 31623 ventas (27%).
-
-```{r}
-
-  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "steelblue", color = "white", 
-                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
-                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+```{r} 
+  ggplot(data.frame(x = lab$copiesSold), aes(x = x)) +
+  geom_histogram(binwidth = 200000, fill = "steelblue", color = "white", 
+                 aes(y = ..count..)) +
   theme_bw() +
-  labs(title = "Distribución del Nº de copias vendidas",
-       x = "Copias vendidas",
-       y = "Frecuencia relativa") 
+  labs(title = "Distribución del Nº de copias vendidas:",
+       x = "Precio ($)",
+       y = expression("Frecuencia absoluta ("*n[i]*")")) +
+
+  scale_x_continuous(limits = c(500, 6000000), 
+                     breaks = seq(1000000, 6000000, by = 1000000),
+                     labels = c("1M", "2M", "3M", "4M", "5M", "6M")) +
+  scale_y_continuous(limits = c(0, 130), 
+                     breaks = seq(0, 130, by = 20),
+                     labels = seq(0, 130, by = 20))
 
 ```
 
+
 ```{r}
 
-  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "steelblue", color = "white", 
-                 aes(y = ..density..), alpha = 0.6) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
-                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+  ggplot(lab, aes(x = copiesSold)) +
+  geom_histogram(binwidth = 200000, fill = "steelblue", color = "white", 
+                 aes(y = ..count../sum(..count..))) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$copiesSold), 
+                sd = sd(lab$copiesSold)), color = "red", size = 1.5, alpha = 0.6) +
   theme_bw() +
-  labs(title = "Distribución del Nº de copias vendidas",
-       x = "Copias vendidas",
-       y = "Frecuencia absoluta") 
-
+  labs(title = "Distribución del Nº de copias vendidas:",
+       x = "Precio ($)",
+       y = expression("Frecuencia relativa ("*f[i]*")")) +
+  
+  scale_x_continuous(limits = c(0, 6000000), 
+                     breaks = seq(1000000, 6000000, by = 1000000),
+                     labels = c("1M", "2M", "3M", "4M", "5M", "6M")) +
+  scale_y_continuous(limits = c(0, 0.025), 
+                     breaks = seq(0, 0.025, by = 0.01),
+                     labels = seq(0, 0.025, by = 0.01))
 ```
 
 
@@ -238,10 +241,9 @@ Con el fin de facilitar el análisis del gráfico, a continuación se muestra un
   lab|> select(copiesSold) |> descr() |> kable(digits = 2)
 ```
 
+Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos de las ventas están sesgados, concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00) y con colas extremadamente largas, por lo que tiene sentido que la representación de la distribución normal de los datos se comporte como una línea recta y no se asemeje para nada a una campana.
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos las ventas están sesgados (Skewness = 18.58 // Kurtosis = 419.44 // IQR = 32951)), concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00).
-
-Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las 3162 y las 31623 ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
+Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las primeras 10 mil ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
 
 ### Estudio de la variable PRICE
 
@@ -249,13 +251,14 @@ Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, 
 
 ```{r}
 
-  table(lab$price) |> 
+  price_breaks <- seq(min(lab$price), max(lab$price), length.out = 11)
+  lab$price_intervalos <- cut(lab$price, breaks = price_breaks, include.lowest = TRUE)
+
+  table(lab$price_intervalos) |> 
 
   as.data.frame() |> 
 
   mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
-
-  arrange(desc(Freq)) |>
 
   gt() |> 
 
@@ -268,56 +271,59 @@ Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, 
 
   fmt_number(3, decimals = 4) |> 
 
-  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
+  
+```
 
-  tab_style(style = list(
-    cell_text(weight = "bold")),  
-    locations = cells_body(rows = c(1, 2, 3, 4, 5)))
+Como se puede apreciar, predominan los precios entre los 0 y 30 dólares, siendo mucho más frecuentes entre los mismos los precios entre los 10 y los 20 dólares, representando aproximadamente algo más de un tercio del peso de la muestra (42%). Asimismo, el siguiente intervalo más frecuente es el de los 0 a 10 dólares, con un peso del 33% de la muestra. 
+
+Cabe destacar como posible outlier el único precio con una frecuencia de 1 que se corresponde con el valor de 99,99$, por lo que se excluirá este valor a la hora de representar los valores en el histograma.
+
+```{r}
+  lab_filtrado <- lab[lab$price != 99.99,]
+  price_filtrado <- lab_filtrado$price
 
 ```
 
 
-Realmente no hay un precio que destaque en la muestra, ya que se trata de valores muy dispersos. A pesar de ello, podemos destacar los 5 primeros valores con más frecuencia: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%). 
-
 ```{r}
 
-  ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "steelblue", color = "white", 
-                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
-                sd = sd(lab$price)), color = "red", size = 1.5) +
+  ggplot(data.frame(x = price_filtrado), aes(x = x)) +
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white", 
+                 aes(y = ..count..)) +
   theme_bw() +
-  labs(title = "Distribución del precio por copia ($)",
-       x = "Precio por copia",
-       y = "Frecuencia relativa") 
-
+  labs(title = "Distribución del precio por copia:",
+       x = "Precio ($)",
+       y = expression("Frecuencia absoluta ("*n[i]*")"))
 ```
 
 ```{r}
 
-  ggplot(data.frame(x = lab$price), aes(x = x)) +
+  ggplot(data.frame(x = price_filtrado), aes(x = x)) +
   geom_histogram(binwidth = 5, fill = "steelblue", color = "white", 
-                 aes(y = ..density..), alpha = 0.6) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
-                sd = sd(lab$price)), color = "red", size = 1.5) +
+                 aes(y = ..count../sum(..count..))) +
+  stat_function(fun = dnorm, args = list(mean = mean(price_filtrado), 
+                sd = sd(price_filtrado)), color = "red", size = 1.5, alpha = 0.6) +
   theme_bw() +
-  labs(title = "Distribución del precio por copia ($)",
-       x = "Precio por copia",
-       y = "Frecuencia absoluta") 
-
+  labs(title = "Distribución del precio por copia:",
+       x = "Precio ($)",
+       y = expression("Frecuencia relativa ("*f[i]*")"))
 ```
 
-
-Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `price`:
+Con el fin de facilitar el análisis del gráfico y de poder comprobar cómo ha cambiado la precisión del analisis sin el outlier mencionado anteriormente, a continuación se muestra un resumen numérico de la variable `price` y de la misma filtrada :
 
 ```{r}
-  lab|> select(price) |> descr() |> kable(digits = 2)
+  analisis_price <- lab|> select(price) |> descr() |> kable(digits = 2)
+  analisis_price_filtrado <- price_filtrado |> descr() |> kable(digits = 2)
+
+  cbind(analisis_price, analisis_price_filtrado) |> 
+  kable(digits = 2)
+
 ```
 
+Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.46 // Std. Dev = 12.47), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.46 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness = 1.46).
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.52 // Std. Dev = 12.65), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.52 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness	= 1.57). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	3.84) que nuestra muestra es ligeramente más alta (idealmente Kurtosis =	3.00).
-
-En definitiva, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; a pesar de ello, cabe destacar los 5 primeros precios más frecuentes: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%) y el precio mínimo: 0.00$ y máximo: 99.99$.
+En definitiva, podemos obtener varias conclusiones de este estudio: hay una clara tendencia hacia los precios menores en nuestra muestra y además, hemos encontrado valores que distorsionan los datos.
 
 
 ### Estudio de la variable REVENUE
@@ -655,25 +661,19 @@ ggplot(lab, aes(x = copiesSold, y = revenue)) +
 Como se puede observar, las variables "copiesSold" y "revenue" se relacionan cuando el número de copias vendidas es inferior a 5 millones. La recaudación depende, aunque no exclusivamente, de las copias vendidas, pero a medida que se venden más copias, la relación entre ambas variables se vuelve más débil.
 
 ### Estudio de las variables PRICE Y REVENUE
-En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra.
+
+En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra y descartar posibles outliers.
 
 ```{r}
 
-  lab$logrevenue <- log10(lab$revenue)
-
-  lab$revenue_cat_log <- cut(lab$logrevenue, breaks = seq(floor(min(lab$logrevenue)), 
-                                       ceiling(max(lab$logrevenue)), by = 0.5), include.lowest = TRUE, right = FALSE)
-
-  lab$revenue_intervalos_etiquetas <- sapply(levels(lab$revenue_cat_log), function(x) {
-    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
-    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
-  })
-
-  levels(lab$revenue_cat_log) <- lab$revenue_intervalos_etiquetas
+  price_filtrado_breaks <- seq(min(lab_filtrado$price), max(lab_filtrado$price), length.out = 8)
+  lab_filtrado$price_intervalos <- cut(lab_filtrado$price, breaks = price_filtrado_breaks, include.lowest = TRUE)  
   
-  price_cat <- cut(lab$price, breaks = seq(0, 100, by = 5), right = FALSE)  # 4 intervalos para y
-
-  tabla_abs_priceRevenue <- table(lab$revenue_cat_log, price_cat)
+  revenue_breaks <- c(20000, 5000000, 50000000, 85000000, 150000000, 250000000, 335000000, 500000000, 585000000, 650000000, 755000000, 850000000)
+  revenue_labels <- c("[20k-5M]", "(5M-50M]", "(50M-85M]", "[85M-150M]", "(150M-250M]", "(250M-335M]", "(335M-500M]", "(500M-585M]", "(585M-650M]", "(650M-755M]", "(755M-850M]")
+  lab_filtrado$revenue_intervalos <- cut(lab_filtrado$revenue, breaks = revenue_breaks, labels = revenue_labels, include.lowest = TRUE)
+  
+  tabla_abs_priceRevenue <- table(lab_filtrado$revenue_intervalos, lab_filtrado$price_intervalos)
 
   tabla_rel_priceRevenue <- prop.table(tabla_abs_priceRevenue) * 100
   
@@ -682,63 +682,94 @@ En primer lugar, con el objetivo de comprender cómo varían los beneficios en c
 
   rownames(tabla_contingencia_priceRevenue) <- rownames(tabla_abs_priceRevenue)
   colnames(tabla_contingencia_priceRevenue) <- colnames(tabla_abs_priceRevenue)
+  
+  kable(tabla_contingencia_priceRevenue, caption = "y: beneficios (dólares) // x: precio (dólares)") |> 
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el resto de intervalos no tienen un peso significativo a considerar en este análisis, por lo que vamos a realizar un filtrado de la variable hasta los 5M $ de beneficio para quedarnos únicamente con el primer intervalo, eliminando un total de 69 muestras del dataset.
 
-  kable(tabla_contingencia_priceRevenue)
+```{r}
+  lab_filtrado2 <- lab_filtrado[lab_filtrado$revenue <= 5000000,]
+
+
+  revenue_filtrado2 <- lab_filtrado2$revenue_intervalos
+  
+  revenue_breaks2 <- c(20000, 50000, 100000, 250000 ,500000, 1000000, 5000000)
+
+  revenue_labels2 <- c("[20k-50k]", "(50k-100k]", "(100k-250k]", "(250k-500k]", "(500k-1M]", "(1M-5M]")
+  
+  lab_filtrado2$revenue_intervalos <- cut(lab_filtrado2$revenue, breaks = revenue_breaks2, labels = revenue_labels2, include.lowest = TRUE)
+  
+  tabla_abs_priceRevenue2 <- table(lab_filtrado2$revenue_intervalos, lab_filtrado2$price_intervalos)
+
+  tabla_rel_priceRevenue2 <- prop.table(tabla_abs_priceRevenue2) * 100
+  
+  tabla_contingencia_priceRevenue2 <- matrix(paste(tabla_abs_priceRevenue2, "(", round(tabla_rel_priceRevenue2, 2), "%)", sep = ""),
+                            nrow = nrow(tabla_abs_priceRevenue2), ncol = ncol(tabla_abs_priceRevenue2))
+
+  rownames(tabla_contingencia_priceRevenue2) <- rownames(tabla_abs_priceRevenue2)
+  colnames(tabla_contingencia_priceRevenue2) <- colnames(tabla_abs_priceRevenue2)
+
+  kable(tabla_contingencia_priceRevenue2, caption = "y: beneficios (dólares) // x: precio (dólares)") |> 
+  kable_styling(latex_options = c("striped", "hold_position"))
   
 ```
 
-
 Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0$ y 20$).
 
-Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica beneficios menores.
+Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica obtener beneficios menores.
 
 
-A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal.
+A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) con el dataset total y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal con el dataset filtrado a 5M $ de beneficios.
 
 ```{r}
-lab |>
-  ggplot(aes(x = logrevenue, y = price)) +
+  lab_filtrado |>
+  
+  ggplot(aes(x = revenue, y = price)) +
   geom_point() +
   geom_smooth() +
-  labs(title = "Gráfico de dispersión con ajuste de regresión")
+  labs(title = "Gráfico de dispersión con ajuste de regresión automático:") +
+  scale_x_continuous(breaks = c(0, 200000000, 400000000, 600000000, 800000000), labels = c("0", "200M", "400M", "600M", "800M"))
 ```
+
 ```{r}
-lab |> 
-  ggplot(aes(x = logrevenue, y = price)) +
+  lab_filtrado2 |> 
+  
+  ggplot(aes(x = revenue, y = price)) +
   geom_point() +
   geom_smooth(method = lm, se = FALSE) +
-  labs(title = "Gráfico de dispersión con ajuste de regresión lineal")
+  labs(title = "Gráfico de dispersión con ajuste de regresión lineal:")+
+  scale_x_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000, 5000000), labels = c("0", "1M", "2M", "3M", "4M", "5M"))
 ```
 
-
-En cuanto a los distintos ajustes de la recta, no hay una diferencia significativa entre un método y el otro. Según ambas rectas, a simple vista podemos denotar un aumento positivo y progresivo de los beneficios en cuanto al aumento del precio.
-
+Cabe destacar, que en la primera gráfica, la mayoría de datos se concentran en una zona y la dispersión de puntos es tan elevada para los beneficios altos que la interpretación de la recta se vuelve prácticamente imposible, mientras que en la segunda gráfica podemos denotar un aumento positivo y progresivo de los beneficios en cuanto el precio aumenta.
 
 Para mayor comprensión de ambos gráficos, mostramos el siguiente resumen numérico:
 
 ```{r}
-  summary(lab |> select(logrevenue, price) |> with(lm(logrevenue ~ price)))
+  summary(lab_filtrado2 |> select(revenue, price) |> with(lm(revenue ~ price)))
 ```
 
+Aproximadamente, a través de los valores del resumen (Estimate Std. (revenue) = 131002 // Estimate Std. (price) = 16368) la recta de nuestro modelo ajustado es la siguiente:
 
-Aproximadamente, a través de los valores del resumen (Estimate Std (logrevenue) = 4.82304 // Estimate Std (price) = 0.02350) la recta en términos logarítmicos de nuestro modelo ajustado es la siguiente:
+`revenue = 16368 × price + 131002`
 
-`logrevenue = 0.02 × price + 4.82`
+Lo que nos indica una función lineal creciente, donde los beneficios aumentan a medida que los precios aumentan. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería de 131002$.
 
+```{r}
+  cor(lab_filtrado2$price, lab_filtrado2$revenue)
+```
+En cuanto a la correlación de una variable con otra y predictibilidad del modelo creado, el valor del coeficiente de correlación lineal (0.25) nos sugiere una relación lineal positiva débil entre price y revenue y el valor R-squared (0.0619) indica que el 6.19% de la variabilidad de los beneficios es explicada por el precio, lo cual es un porcentaje extremadamente bajo. 
 
-Despejando el logaritmo, para una mejor interpretación, nos queda la siguiente recta:
+Esto sugiere que, el precio no afecta directamente a los beneficios y, que hay otros factores que también influyen en los beneficios que deberemos tener en cuenta en nuestro modelo. Además, se trata de un modelo poco preciso, ya que el valor del Residual standard error (721900) nos indica que la varianza residual es de 849.65, cuyo valor es muy elevado.
 
-`revenue = (e ^ (0.02 * price)) × 123.97` 
+A continuación se muestra la matriz de varianzas y covarianzas del modelo:
 
-ó
-
-`revenue = (1.02 ^ price) × 123.97`
-
-Lo que indica una función exponencial creciente, donde a más aumentan los precios, los ingresos aumentan drásticamente; asímismo, con precios inferiores los ingresos incrementan muy lentamente. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería 123.97$.
-
-Analizando más valores del resumen tenemos que el modelo es altamente significativo estadísticamente para el estudio de la muestra debido a que el valor F-statistic (281.7) es alto  y el p-value (< 2.2e-16) es bajo; además, se trata de un modelo altamente preciso ya que el valor del Residual standard error(0.6856) es muy cercano al valor ideal (entorno a 0). 
-
-Por último, en cuanto a correlación de una variable con otra y predictibilidad del modelo creado, el valor R-squared (0.1583) indica que el 15.83% de la variabilidad en el logaritmo de los ingresos es explicada por el precio, el cual no es un porcentaje extremadamente alto. Esto sugiere que, si bien el precio afecta los ingresos, hay otros factores que también influyen en los ingresos que no están considerados en el modelo.
+```{r}
+  summary(lab_filtrado2 |> select(revenue, price) |> with(lm(revenue ~ price))) |>
+  vcov()
+```
+Dicha matriz nos indica una varianza muy elevada tanto como para revenue (1149614621) como para price (2843591) y una covarianza de -47250453, lo que reafirma nuestra teoría de que no hay una relación fuerte ni concisa entre ambas variables.
 
 
 ### Estudio de las variables AVGPLAYTIME Y REVENUE
@@ -793,6 +824,7 @@ lab |>
   )
 
 ```
+
 El gráfico muestra una concentración de juegos con un tiempo promedio bajo (cercano a 0 horas), y una gran dispersión en los valores de recaudación. Sin embargo, a pesar de que algunos juegos tienen tiempos de juego elevados (cercanos a las 300 horas), estos no necesariamente generan más ingresos que otros con menos tiempo jugado.
 
 Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
@@ -841,6 +873,7 @@ ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
   theme_minimal()
 
 ```
+
 Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación  que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
 
 
@@ -869,6 +902,7 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
   theme_minimal()
 
 ```
+
 Debido a la disparidad entre las muestras que tenemos, necesitaremos aplicar una escala logarítmica para evitar la asimetría en dichas muestras ya que la distribuición es muy sesgada.
 
 ```{r}
@@ -896,11 +930,11 @@ Aquí podemos concluir que no, de hecho, aunque sean la mayoría de videojuegos,
 
 `- ¿Los juegos que venden más copias recaudan más dinero?`
 
-Podríamos afirmar que sí, ya que en la regresión lineal, se puede observar como es positiva, además se pueden bservar otros factores como la correlación que tienen estas dos variables que es significativa.
+Podríamos afirmar que sí, ya que en la regresión lineal, se puede observar como es positiva, además se pueden observar otros factores como la correlación que tienen estas dos variables que es significativa.
 
 `- ¿Los juegos más caros recaudan más dinero que los baratos?`
 
-En cuanto a estas dos variables, a pesar de que la regresión lineal es positiva, no es demasiado notable, además, la correlación de ambas variables es débil. Por lo que podemos concluir que no afecta apenas el que un juego sea más caro que otro. De hecho, esta relación se puede además relacionar con el análisis de el tipo de empresa, ya que los juegos que más recaudan(los AAA), suelen tener un precio bastante elevado.
+En cuanto a estas dos variables, a pesar de que la regresión lineal es positiva, no es demasiado notable, además, la correlación de ambas variables es débil. Por lo que podemos concluir que no afecta apenas el que un juego sea más caro que otro. De hecho, esta relación se puede además relacionar con el análisis del tipo de empresa, ya que los juegos que más recaudan (los AAA), suelen tener un precio bastante elevado.
 
 `- ¿Los juegos más largos recaudan más dinero que los que son más cortos?`
 
@@ -908,7 +942,7 @@ En esta relación, podemos afirmar que no tienen apenas relación como hemos pod
 
 `- ¿Los juegos con buenas valoraciones recaudan más que los que tienen peor puntuación?`
 
-Por úlitmo, estas dos variables, tenían una correlación muy baja, de hecho, la más baja del estudio. Es decir, podríamos haber concluido desde el principio que no tenían relación ninguna. Aún así podemos ver como en el ajuste de regresión lineal, la recta es prácticamente horizontal. Por ello, podemos concluir que las valoraciones no tienen nada que ver con lo que un juego pueda recaudar. Como dijimos en el análisis detallado de estas dos variables, puede deberse a que estas valoraciones son de los usuarios y no de profesionales como podría ser en "Metacritic".
+Por último, estas dos variables, tenían una correlación muy baja, de hecho, la más baja del estudio. Es decir, podríamos haber concluido desde el principio que no tenían relación ninguna. Aún así podemos ver como en el ajuste de regresión lineal, la recta es prácticamente horizontal. Por ello, podemos concluir que las valoraciones no tienen nada que ver con lo que un juego pueda recaudar. Como dijimos en el análisis detallado de estas dos variables, puede deberse a que estas valoraciones son de los usuarios y no de profesionales como podría ser en "Metacritic".
 
 
 ## LINK AL REPOSITORIO DE GITHUB
