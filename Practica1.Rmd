@@ -682,8 +682,9 @@ En primer lugar, con el objetivo de comprender cómo varían los beneficios en c
 
   rownames(tabla_contingencia_priceRevenue) <- rownames(tabla_abs_priceRevenue)
   colnames(tabla_contingencia_priceRevenue) <- colnames(tabla_abs_priceRevenue)
-  
-  kable(tabla_contingencia_priceRevenue, caption = "y: beneficios (dólares) // x: precio (dólares)") |> 
+
+  kable(tabla_contingencia_priceRevenue, caption = htmltools::tags$div(style = "text-align: center;", 
+                                     htmltools::tags$h4(htmltools::tags$strong("y: beneficios(dólares) // x: precio(dólares)")))) |>
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
 Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el resto de intervalos no tienen un peso significativo a considerar en este análisis, por lo que vamos a realizar un filtrado de la variable hasta los 5M $ de beneficio para quedarnos únicamente con el primer intervalo, eliminando un total de 69 muestras del dataset.
@@ -710,7 +711,8 @@ Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el
   rownames(tabla_contingencia_priceRevenue2) <- rownames(tabla_abs_priceRevenue2)
   colnames(tabla_contingencia_priceRevenue2) <- colnames(tabla_abs_priceRevenue2)
 
-  kable(tabla_contingencia_priceRevenue2, caption = "y: beneficios (dólares) // x: precio (dólares)") |> 
+  kable(tabla_contingencia_priceRevenue2, caption = htmltools::tags$div(style = "text-align: center;", 
+                                     htmltools::tags$h4(htmltools::tags$strong("y: beneficios(dólares) // x: precio(dólares)")))) |>
   kable_styling(latex_options = c("striped", "hold_position"))
   
 ```
