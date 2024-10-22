@@ -22,41 +22,25 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Introducción y definición de objetivos
 
-<<<<<<< HEAD
-
-El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los mejores 1500 juegos, según diferentes variables, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
+El archivo Steam_2024_bestRevenue_1500.csv contiene una recopilación de datos de los 1500 juegos con más beneficios obtenidos, concretamente, lanzados en Steam desde el 1 de enero de 2024, hasta el 9 de septiembre de 2024.
 
 El principal objetivo de nuestro estudio estadístico es dar respuesta a una serie de preguntas, y conocer las distintas relaciones existentes entre la recaudación de varios videojuegos y las diferentes variables que puedan llegar a afectar a este indicador.
 
 En cuanto a las preguntas, hemos planteado las siguientes:
 
-`- ¿Los indies generan más dinero que los AA o AAA?`
+`- ¿Los indies recaudan más dinero que los AA o AAA?`
 
-`- ¿El precio influye en la cantidad de copias vendidas?`
+`- ¿Los juegos que venden más copias recaudan más dinero?`
 
-`- ¿Es mayor el precio de los indies, de los AA o AAA?`
+`- ¿Los juegos más caros recaudan más dinero que los baratos?`
 
-`- ¿Hay mas jugadores en juegos indies, en AA o AAA?`
+`- ¿Los juegos más largos recaudan más dinero que los que son más cortos?`
 
-`- ¿Tienen mejores criticas los indies, los AA o los AA?`
+`- ¿Los juegos con buenas valoraciones recaudan más que los que tienen peor puntuación?`
 
-`- ¿Juegos más largos tienen mejores valoraciones?`
+También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen una valoración de 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
 
-`- ¿Depende el precio de las críticas?`
-
-`- ¿Es mejor juego un indie o un AA o AAA?`
-
-`- ¿Depende la fecha de salida con el numero de copias vendidas?`
-
-`- ¿Son más largos los indies, los AA o AAA?`
-
-`- ¿Depende el precio de la duración del juego?`
-
-`- ¿Depende la nota con el precio del juego?`
-
-
-También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen de valoración un 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
->>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
+Además, vamos a descartar del estudio la variable "steamId", ya que no nos aporta ningún tipo de información relevante para nuestro objetivo.
 
 
 # Importación de datos y carga de paquetes
@@ -73,7 +57,7 @@ library(flextable)
 library(knitr) 
 library(corrplot)
 library(dplyr)
-library (kableExtra)
+library(kableExtra)
 
 ```
 
@@ -82,9 +66,6 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 ```{r, results = 'hide'}
 
   lab <- read.csv("DATA/Steam_2024_bestRevenue_1500.csv", header = TRUE, sep = ",")
-  # 'mutate(fecha = as.Date(fecha))' transforma la columna 'fecha' a formato de fecha.
-  # 'mutate()' es una función del paquete dplyr que se utiliza para añadir nuevas variables o transformar las existentes.
-  # 'as.Date()' convierte los datos a formato de fecha.
   lab |>
   mutate(releaseDate = as.Date(releaseDate))
   
@@ -93,60 +74,51 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
 
 # Diccionario de datos
 
-<<<<<<< HEAD
 En esta sección, presentamos un diccionario de datos que detalla cada variable contenida en nuestro conjunto de datos 'Steam_2024_bestRevenue_1500.csv'. Las variables abarcan desde el nombre de cada uno de los juegos, hasta los desarrolladores de cada uno de ellos.
 
 
 * `name`: Nombre del juego.
-      - Variable tipo: Identificador.
-      
-* `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
-      - Variable tipo:Marca de tiempo.
-      
-* `copiesSold`: Número de copias vendidas (Unidades).
-      - Variable tipo: Cuantitativa / Discreta.
-      
-* `price`: Precio original del juego de salida ($).
-      - Variable tipo: Numérica / Discreta
-      
-* `revenue`: Cantidad de dinero recaudada por el juego ($).
-      - Variable tipo: Cuantitativa / Discreta.
-      
-* `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
-      - Variable tipo: Cuantitativa / Continua.
-      
-* `reviewScore`: Puntuación del juego en Steam (0-100).
-      - Variable tipo: Cuantitativa / Discreta.
-      
-* `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
-      - Variable tipo: Cualitativa / Multinivel.
-      
-* `publishers`: Empresa que se dedica a la publicación y marketing del juego.
-      - Variable tipo: Identificador.
-      
-* `developers`: Empresa que se dedica a desarrollar y mantener el juego.
-      - Variable tipo: Identificador.
-      
-* `steamId`: Id de steam
     - Variable tipo: Identificador.
       
+* `releaseDate`: Fecha de salida del juego ("DD/MM/AAAA").
+    - Variable tipo: Marca de tiempo.
       
->>>>>>> 2ccac3b800228844d3e2fda6935a7742635d18d4
+* `copiesSold`: Número de copias vendidas (Unidades).
+    - Variable tipo: Cuantitativa / Discreta.
+      
+* `price`: Precio original del juego de salida ($).
+    - Variable tipo: Cuantitativa / Continua
+      
+* `revenue`: Cantidad de dinero recaudada por el juego ($).
+    - Variable tipo: Cuantitativa / Continua
+      
+* `avgPlaytime`: Tiempo medio que los jugadores han empleado en el juego (Horas).
+    - Variable tipo: Cuantitativa / Continua.
+      
+* `reviewScore`: Puntuación del juego en Steam (0-100).
+    - Variable tipo: Cuantitativa / Discreta.
+      
+* `publisherClass`: Se definen las empresas como pequeña (indie), mediana (AA) o grande (AAA).
+    - Variable tipo: Cualitativa / Multinivel.
+      
+* `publishers`: Empresa que se dedica a la publicación y marketing del juego.
+    - Variable tipo: Identificador.
+      
+* `developers`: Empresa que se dedica a desarrollar y mantener el juego.
+    - Variable tipo: Identificador.
+      
+* `steamId`: Id de Steam
+    - Variable tipo: Identificador.
+      
+    
 # Muestra del dataset
 
-Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. Este paso es crucial para familiarizarnos con el tipo de datos y para verificar que la importación se haya realizado correctamente. Utilizaremos funciones del paquete 'dplyr' para seleccionar las primeras 10 filas del dataframe 'lab', y luego el paquete 'gt' para presentar estos datos de una manera clara y estructurada.
+Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. 
 
 ```{r}
-# 'lab |> slice_head(n=10)' selecciona las primeras 10 filas del dataframe 'lab'.
-# 'lab' es el dataframe que se ha leído y preparado en los pasos anteriores.
-# '|>' es el operador de tubería en R que permite pasar el resultado de una función a la siguiente.
-lab |>  
-  # 'slice_head(n=10)' es una función del paquete dplyr que selecciona las primeras 'n' filas del dataframe.
-  # En este caso, selecciona las primeras 10 filas.
-  slice_head(n=10) |> 
 
-  # 'gt()' es una función del paquete gt que crea una tabla elegante y bien formateada.
-  # Convierte el resultado del dataframe reducido a una tabla que puede ser más fácilmente formateada y presentada.
+lab |>  
+  slice_head(n=10) |> 
   gt()
 
 ```
@@ -154,14 +126,10 @@ lab |>
 
 # Análisis exploratorio de datos
 
-Iniciaremos nuestro análisis exploratorio de datos (EDA) para obtener una comprensión profunda del conjunto de datos del laboratorio. Este proceso nos permitirá descubrir patrones, detectar anomalías, probar hipótesis y verificar supuestos a través de diversos métodos estadísticos y gráficos.
-
 ## Datos univariantes
 
 Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos univariantes. Este enfoque nos permite entender la distribución y frecuencia de cada variable individualmente.
 
-<<<<<<< Updated upstream
-=======
 ### Estudio de la variable RELEASEDATE
 
 Para el estudio de la variable "releaseDate" crearemos un histograma, donde se agruparán las fechas de salida de cada videojuego en meses (desde enero hasta septiembre de este mismo año), y determinaremos cuál han sido los con más y menos lanzamientos.
@@ -179,116 +147,103 @@ lanzamientos_mes <- lab |>
   summarise(n_juegos = n(), .groups = 'drop')
 
   ggplot(lanzamientos_mes, aes(x = mes, y = n_juegos, fill = n_juegos)) +
-    geom_bar(stat = "identity", color = "black", alpha = 0.8) +
+    geom_bar(stat = "identity", color = "white", alpha = 0.8) +
     scale_fill_gradient2(low = "steelblue", mid = "skyblue", high = "red", midpoint = median(lanzamientos_mes$n_juegos)) +
     theme_bw() +
-    labs(title = "Distribución de las fechas de lanzamiento",
+    labs(title = "Distribución de las fechas de lanzamiento del 2024",
          x = "Mes",
          y = "Nº Lanzamientos")
-
 ```
+
 
 Según el gráfico podemos decir que los meses con más lanzamientos han sido: 1º -> Mayo, 2º -> Abril, 3º -> Marzo. Mientras tanto los meses con menos lanzamientos han sido: 1º -> Septiembre (ya que los datos van desde principios de este año hasta el 9 de septiembre), 2º -> Enero, 3º -> Agosto.
 
 
-
->>>>>>> Stashed changes
 ### Estudio de la variable COPIESSOLD
 
-Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. Debido a que sus valores van desde 500 a 30.000.000 (ventas), asumimos que la distribución de dicha variable es dispersa y para solventarlo usaremos una escala logarítimica. 
+Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. 
 
 ```{r}
 
-  lab$logCopiesSold <- log10(lab$copiesSold)
+  copiesSold_breaks <- c(500, 5000, 10000, 15000, 25000, 50000, 100000, 1000000, 5000000, 10000000, 31000000)
+  copiesSold_labels <- c("[500-5k]", "(5k-10k]", "(10k-15k]", "(15k-25k]", "(25k-50k]", "(50k-100k]", "(100k-1M]", "(1M-5M]", "(5M-10M]", "(10M-31M]")
 
-  # Definir los intervalos logarítmicos
-  # Elige un rango adecuado en la escala logarítmica para crear los intervalos.
-  lab$copiesSold_intervalos_log <- cut(lab$logCopiesSold, breaks = seq(floor(min(lab$logCopiesSold)), 
-                                       ceiling(max(lab$logCopiesSold)), by = 0.5), include.lowest = TRUE, right = FALSE)
+  lab$copiesSold_intervalos <- cut(lab$copiesSold, breaks = copiesSold_breaks, labels = copiesSold_labels, include.lowest = TRUE)
+
   
-  # Crear etiquetas para los intervalos con el formato logarítmico y su equivalente en la escala original
-  # Usamos 'paste0' para crear etiquetas que incluyan ambas escalas.
-  lab$copiesSold_intervalos_etiquetas <- sapply(levels(lab$copiesSold_intervalos_log), function(x) {
-    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
-    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
-  })
-
-  # Reemplazar los niveles de 'copiesSold_intervalos_log' por las nuevas etiquetas
-  levels(lab$copiesSold_intervalos_log) <- lab$copiesSold_intervalos_etiquetas
-
-  # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
-  table(lab$copiesSold_intervalos_log) |> 
+  table(lab$copiesSold_intervalos) |> 
   
-  # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
-  
-  # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
-  # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
+
   mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
   
-  # Ordena la tabla
-  arrange(desc(Freq)) |>
-  
-  # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
   gt() |> 
-  
-  # Añade un título en cursiva y negrita a la tabla de frecuencias
+
   tab_header(
     title = md("**_Nº de copias vendidas_**")
   ) |>
   
-  # Cambia las etiquetas de las columnas a notación matemática.
   cols_label(Var1 = "\\(x_i\\)", Freq = "\\(n_i\\)", freqRelativa = "\\(f_i\\)", 
   freqAbsAcumulada = "\\(N_i\\)", freqRelAcumulada = "\\(F_i\\)") |>  
   
-  # Formatea los números a mostrar cuatro decimales.
   fmt_number(3, decimals = 4) |> 
-  
-  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
+
   tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
-  
-  # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
+
   tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) 
   
 ```
-Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en el intervalo [3.5,4.5), por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos con muchos outliers (como ya se había presupuesto previamente). Como resultado, los valores más significativos son: entre las 3162 y 10000 ventas (31%) y entre las 10000 y 31623 ventas (27%).
+Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en los primeros intervalos hasta los 5M de ventas, por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos.
 
-```{r}
-
-  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
-                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
-                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+```{r} 
+  ggplot(data.frame(x = lab$copiesSold), aes(x = x)) +
+  geom_histogram(binwidth = 200000, fill = "steelblue", color = "white", 
+                 aes(y = ..count..)) +
   theme_bw() +
-  labs(title = "Distribución del Nº de copias vendidas",
-       x = "Copias vendidas",
-       y = "Frecuencia relativa") 
+  labs(title = "Distribución del Nº de copias vendidas:",
+       x = "Precio ($)",
+       y = expression("Frecuencia absoluta ("*n[i]*")")) +
+
+  scale_x_continuous(limits = c(500, 6000000), 
+                     breaks = seq(1000000, 6000000, by = 1000000),
+                     labels = c("1M", "2M", "3M", "4M", "5M", "6M")) +
+  scale_y_continuous(limits = c(0, 130), 
+                     breaks = seq(0, 130, by = 20),
+                     labels = seq(0, 130, by = 20))
 
 ```
 
+
 ```{r}
 
-  ggplot(data.frame(x = lab$logCopiesSold), aes(x = x)) +
-  geom_histogram(binwidth = 0.15, fill = "skyblue", color = "black", 
-                 aes(y = ..density..), alpha = 0.6) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$logCopiesSold), 
-                sd = sd(lab$logCopiesSold)), color = "red", size = 1.5) +
+  ggplot(lab, aes(x = copiesSold)) +
+  geom_histogram(binwidth = 200000, fill = "steelblue", color = "white", 
+                 aes(y = ..count../sum(..count..))) +
+  stat_function(fun = dnorm, args = list(mean = mean(lab$copiesSold), 
+                sd = sd(lab$copiesSold)), color = "red", size = 1.5, alpha = 0.6) +
   theme_bw() +
-  labs(title = "Distribución del Nº de copias vendidas",
-       x = "Copias vendidas",
-       y = "Frecuencia absoluta") 
-
+  labs(title = "Distribución del Nº de copias vendidas:",
+       x = "Precio ($)",
+       y = expression("Frecuencia relativa ("*f[i]*")")) +
+  
+  scale_x_continuous(limits = c(0, 6000000), 
+                     breaks = seq(1000000, 6000000, by = 1000000),
+                     labels = c("1M", "2M", "3M", "4M", "5M", "6M")) +
+  scale_y_continuous(limits = c(0, 0.025), 
+                     breaks = seq(0, 0.025, by = 0.01),
+                     labels = seq(0, 0.025, by = 0.01))
 ```
+
+
 Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `copiesSold`:
 
 ```{r}
   lab|> select(copiesSold) |> descr() |> kable(digits = 2)
 ```
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos las ventas están sesgados (Skewness = 18.58 // Kurtosis = 419.44 // IQR = 32951)), concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00).
+Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos de las ventas están sesgados, concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00) y con colas extremadamente largas, por lo que tiene sentido que la representación de la distribución normal de los datos se comporte como una línea recta y no se asemeje para nada a una campana.
 
-Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las 3162 y las 31623 ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
+Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las primeras 10 mil ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
 
 ### Estudio de la variable PRICE
 
@@ -296,185 +251,104 @@ Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, 
 
 ```{r}
 
- # Calcula la tabla de frecuencias de la variable 'copiesSold' en el dataframe 'lab'.
-  table(lab$price) |> 
-  
-  # Convierte la tabla de frecuencias en un dataframe.
+  price_breaks <- seq(min(lab$price), max(lab$price), length.out = 11)
+  lab$price_intervalos <- cut(lab$price, breaks = price_breaks, include.lowest = TRUE)
+
+  table(lab$price_intervalos) |> 
+
   as.data.frame() |> 
-  
-  # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
-  # Esto se logra sumando las frecuencias (Freq) acumulativamente y dividiéndolas por el número total de filas en 'lab'.
+
   mutate(freqRelativa = Freq / sum(Freq), freqAbsAcumulada = cumsum(Freq), freqRelAcumulada = cumsum(freqRelativa)) |>
-  
-  
-  # Ordena la tabla
-  arrange(desc(Freq)) |>
-  
-  # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
+
   gt() |> 
-  
-  # Añade un título en cursiva y negrita a la tabla de frecuencias
+
   tab_header(
     title = md("**_Precio por copia ($)_**")
   ) |>
-  
-  # Cambia las etiquetas de las columnas a notación matemática.
+
   cols_label(Var1 = "\\(x_i\\)", Freq = "\\(n_i\\)", freqRelativa = "\\(f_i\\)", 
   freqAbsAcumulada = "\\(N_i\\)", freqRelAcumulada = "\\(F_i\\)") |>  
-  
-  # Formatea los números a mostrar cuatro decimales.
+
   fmt_number(3, decimals = 4) |> 
+
+  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels())
   
-  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
-  tab_style(style = list (cell_text(weight = "bold")), locations = cells_column_labels()) |>
+```
 
-  # Aplica un estilo de texto en negrita a las filas específicas (3 y 5) en el cuerpo de la tabla.
-  tab_style(style = list(
-    cell_text(weight = "bold")),  
-    locations = cells_body(rows = c(1, 2, 3, 4, 5)))
+Como se puede apreciar, predominan los precios entre los 0 y 30 dólares, siendo mucho más frecuentes entre los mismos los precios entre los 10 y los 20 dólares, representando aproximadamente algo más de un tercio del peso de la muestra (42%). Asimismo, el siguiente intervalo más frecuente es el de los 0 a 10 dólares, con un peso del 33% de la muestra. 
+
+Cabe destacar como posible outlier el único precio con una frecuencia de 1 que se corresponde con el valor de 99,99$, por lo que se excluirá este valor a la hora de representar los valores en el histograma.
+
+```{r}
+  lab_filtrado <- lab[lab$price != 99.99,]
+  price_filtrado <- lab_filtrado$price
 
 ```
 
-Realmente no hay un precio que destaque en la muestra, ya que se trata de valores muy dispersos. A pesar de ello, podemos destacar los 5 primeros valores con más frecuencia: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%). 
 
 ```{r}
 
-  ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
-                 aes(y = ..count../sum(..count..), alpha = 0.6)) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
-                sd = sd(lab$price)), color = "red", size = 1.5) +
+  ggplot(data.frame(x = price_filtrado), aes(x = x)) +
+  geom_histogram(binwidth = 3, fill = "steelblue", color = "white", 
+                 aes(y = ..count..)) +
   theme_bw() +
-  labs(title = "Distribución del precio por copia ($)",
-       x = "Precio por copia",
-       y = "Frecuencia relativa") 
-
+  labs(title = "Distribución del precio por copia:",
+       x = "Precio ($)",
+       y = expression("Frecuencia absoluta ("*n[i]*")"))
 ```
 
 ```{r}
 
-  ggplot(data.frame(x = lab$price), aes(x = x)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", 
-                 aes(y = ..density..), alpha = 0.6) +
-  stat_function(fun = dnorm, args = list(mean = mean(lab$price), 
-                sd = sd(lab$price)), color = "red", size = 1.5) +
+  ggplot(data.frame(x = price_filtrado), aes(x = x)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white", 
+                 aes(y = ..count../sum(..count..))) +
+  stat_function(fun = dnorm, args = list(mean = mean(price_filtrado), 
+                sd = sd(price_filtrado)), color = "red", size = 1.5, alpha = 0.6) +
   theme_bw() +
-  labs(title = "Distribución del precio por copia ($)",
-       x = "Precio por copia",
-       y = "Frecuencia absoluta") 
-
+  labs(title = "Distribución del precio por copia:",
+       x = "Precio ($)",
+       y = expression("Frecuencia relativa ("*f[i]*")"))
 ```
-Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `price`:
+
+Con el fin de facilitar el análisis del gráfico y de poder comprobar cómo ha cambiado la precisión del analisis sin el outlier mencionado anteriormente, a continuación se muestra un resumen numérico de la variable `price` y de la misma filtrada :
 
 ```{r}
-  lab|> select(price) |> descr() |> kable(digits = 2)
+  analisis_price <- lab|> select(price) |> descr() |> kable(digits = 2)
+  analisis_price_filtrado <- price_filtrado |> descr() |> kable(digits = 2)
+
+  cbind(analisis_price, analisis_price_filtrado) |> 
+  kable(digits = 2)
+
 ```
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.52 // Std. Dev = 12.65), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.52 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness	= 1.57). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	3.84) que nuestra muestra es ligeramente más alta (idealmente Kurtosis =	3.00).
+Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.46 // Std. Dev = 12.47), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.46 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness = 1.46).
 
-En definitiva, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; a pesar de ello, cabe destacar los 5 primeros precios más frecuentes: 19.99$ (15%), 14.99$ (10%), 9.99$ (9%), 24.99$ (8%), 29.99$ (6%) y el precio mínimo: 0.00$ y máximo: 99.99$.
+En definitiva, podemos obtener varias conclusiones de este estudio: hay una clara tendencia hacia los precios menores en nuestra muestra y además, hemos encontrado valores que distorsionan los datos.
 
 
-### Gráficos de barras
+### Estudio de la variable REVENUE
 
-Ahora, visualizamos la distribución de las categorías mediante gráficos de barras. Estos gráficos son una herramienta efectiva para representar visualmente la frecuencia de cada categoría en nuestras variables categóricas.
-
-Este gráfico de barras muestra la frecuencia absoluta de cada copia vendida en nuestro dataset. Es una forma sencilla y directa de visualizar la cantidad total de copias vendidas.
+Analizamos la variable "revenue" mediante un histograma de los beneficios que nos muestra la distribución de los beneficios que obtienen estos videojuegos.
 
 ```{r}
-# Inicia una visualización de ggplot con 'lab' como el dataframe y 'copiesSold' como variable en el eje x.
-lab |> 
-  ggplot(aes(x = copiesSold)) +
-  # Añade un gráfico de barras, rellenando las barras con el color #CB0017.
-  geom_bar(fill = "#2596be") +
-  # Aplica un tema predeterminado en blanco y negro para la visualización.
-  theme_bw() + 
-  # Establece los títulos del gráfico, eje x, y eje y.
-  labs(title = "Nº de copias vendidas", 
-       x = "Tipo",
-       y = "Frecuencia absoluta")
-```
+ggplot(lab, aes(x = revenue)) +
 
-Aquí, empleamos un enfoque ligeramente diferente al invertir el orden de las barras para la variable 'imperfecciones', lo que nos permite examinar la distribución desde otra perspectiva.
+  geom_histogram(binwidth = 2000000, fill = "steelblue", color = "white") +
 
-```{r}
-# 'fct_rev' invierte el orden de los factores para que el gráfico se muestre en orden inverso.
-# 'as_factor' convierte la columna 'imperfecciones' en un factor si no lo es ya.
-lab |> 
-  mutate(imperfecciones = fct_rev(as_factor(copiesSold))) |> 
-  # Inicio de la creación del gráfico con ggplot2, especificando los datos y mapeando
-  # la variable 'imperfecciones' en el eje y.
-  ggplot(aes(y = copiesSold)) +
-  # 'geom_bar' añade barras al gráfico. 'fill' especifica el color de relleno de las barras.
-  geom_bar(fill = "#2596be") +
-  # Aplica un tema blanco y negro al gráfico para un diseño más limpio y profesional.
-  theme_bw() +
-  # Personaliza las etiquetas de los ejes y el título del gráfico. 'expression' permite
-  # usar expresiones matemáticas en las etiquetas.
-  labs(x = expression("Frecuencia absoluta ("*n[i]*")"),
-       y = "Número de imperfecciones")
-```
+  labs(title = "Distribución de los Beneficios de los Videojuegos",
 
-En este gráfico, exploramos la proporción relativa de los tipos de quesos en nuestro conjunto de datos, utilizando un gráfico de barras que muestra las proporciones en forma de porcentajes. Además, se incluye un gradiente de color en las barras para mostrar las frecuencias absolutas.
+       x = "Beneficios ($)",
+       y = "Frecuencia") +
 
-```{r}
-# Inicia una visualización de ggplot con 'lab' como el dataframe, 'tipo' como variable en el eje x,
-# y calcula la proporción (after_stat(prop)) para el eje y. Agrupación establecida para cálculos de proporción.
-ggplot(lab, aes(x = tipo, y =  after_stat(prop), group = 1)) +
-  # Añade un gráfico de barras con conteo como estadística y rellena las barras basado en el conteo de 'tipo'.
-  geom_bar(aes(fill = after_stat(count)), stat = "count") +
-  # Escala el eje y para mostrar las etiquetas como porcentajes.
-  scale_y_continuous(labels = scales::percent) +  # Convierte las etiquetas de y en porcentajes
-  # Aplica un tema predeterminado en blanco y negro para la visualización.
-  theme_bw() + 
-  # Establece los títulos del gráfico, eje x, y eje y.
-  labs(title = "Tipos de queso", 
-       x = "Tipo",
-       y = "Frecuencia relativa") +
-  # Añade un degradado de color a las barras basado en la frecuencia de conteo, desde 'skyblue' a '#CB0017'.
-  scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017")  # Opcional: color de relleno basado en la frecuencia
+  ylim(0, 200) +  # Establece el rango del eje Y de 0 a 500
+  xlim(0, 50000000) +  # Limita el rango del eje X a 50 millones
+
+  theme_minimal()
 
 ```
 
-Este gráfico muestra la proporción de análisis realizados por cada analista. Utilizamos un enfoque diferente al ordenar los analistas por su proporción y representar tanto la proporción relativa como el conteo absoluto en el gráfico.
 
-```{r}
-# Primero, calcula las proporciones y conserva el conteo original
-# 'lab' es el dataframe que contiene los datos.
-# 'count(copiesSold)' cuenta cuántas veces aparece cada 'copiesSold'.
-# 'mutate(prop = n / sum(n))' añade una nueva columna 'prop' que representa la proporción relativa.
-copiesSold_prop <- lab %>%
-  count(copiesSold) %>%
-  mutate(prop = n / sum(n))
-
-# Luego, usa ggplot para visualizar
-# 'ggplot()' inicia la construcción de un gráfico.
-# 'aes(x = reorder(copiesSold, prop), y = prop, fill = n)' define las estéticas:
-# 'x = reorder(copiesSold, prop)' ordena los copiesSold en el eje x según su proporción.
-# 'y = prop' asigna la proporción relativa al eje y.
-# 'fill = n' usa el conteo original para el color de las barras.
-ggplot(copiesSold_prop, aes(x = reorder(copiesSold, prop), y = prop, fill = n)) +
-  
-  # 'geom_bar(stat = "identity")' crea un gráfico de barras. 
-  # 'stat = "identity"' indica que ya se proporcionaron las alturas de las barras (proporciones).
-  geom_bar(stat = "identity") +
-  
-  # 'scale_y_continuous(labels = scales::percent)' configura el eje y para mostrar las etiquetas como porcentajes.
-  scale_y_continuous(labels = scales::percent) +
-
-  # 'theme_bw()' aplica un tema visual en blanco y negro al gráfico.
-  theme_bw() +
-
-  # 'labs()' establece los títulos y etiquetas del gráfico.
-  # 'title', 'x', 'y' definen el título del gráfico y los títulos de los ejes x e y respectivamente.
-  labs(title = "Nº de copias vendidas", x = "Tipo", y = "Frecuencia relativa") +
-
-  # 'scale_fill_gradient()' define un degradado de color para las barras.
-  # 'low' y 'high' especifican los colores para los valores bajos y altos del conteo respectivamente.
-  scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017")
-
-
-```
+En este histograma vemos la alta concentración de videojuegos con bajos beneficios, son menos frecuentes los juegos que alcanzan beneficios entre los 10 y los 50 millones. La gráfica muestra una clara asimetría con la cantidad que ganan poco y los pocos que obtienen grandes ingresos.
 
 
 ### Estudio de la variable AVGPLAYTIME
@@ -485,25 +359,23 @@ Una herramienta crucial para entender la distribución de nuestra variable cuant
 Vamos a utilizar el color 'steelblue' para las barras, lo que nos permite observar la distribución de la variable de manera sencilla.
 
 ```{r}
-# 'lab |> ggplot(aes(avgPlaytime)) +' inicia la construcción de un gráfico utilizando ggplot2 con datos del dataframe 'lab'.
+
 lab |> ggplot(aes(avgPlaytime)) +
-  # 'aes(avgPlaytime)' establece la estética del gráfico, asignando la variable 'avgPlaytime' del dataframe 'lab' al eje x.
   
-  # 'geom_histogram()' añade un histograma al gráfico. Un histograma es útil para visualizar la distribución de una variable continua.
   geom_histogram(
     
-    fill = "steelblue",  # 'fill = "steelblue"' establece el color de relleno de las barras del histograma a azul acero.
+    fill = "steelblue", 
              
-    col = "white",      # 'col = "white"' define el color del borde de las barras del histograma como blanco.
+    col = "white",    
     breaks = seq(0,100, by = 10)
   ) +
-  
-  # 'theme_bw()' aplica un tema en blanco y negro al gráfico.
-  # Este tema proporciona un contraste visual claro y es popular por su simplicidad y legibilidad.
+
   theme_bw() +
     labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
 
 ```
+
+
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
 
 
@@ -511,19 +383,19 @@ A continuación, se crea una tabla de con los juegos que tienen más horas prome
 
 ```{r}
 
-# Usar el dataframe 'Steam_2024_bestRevenue_1500'
 top_ten_games <- lab %>%
-  arrange(desc(avgPlaytime)) %>%  # Ordenar por avgPlayTime en orden descendente
-  slice(1:10) %>%                  # Seleccionar los 10 primeros
-  select(name, avgPlaytime) %>%    # Seleccionar solo las columnas 'name' y 'avgPlayTime'
-  mutate(avgPlaytime = round(avgPlaytime, 2))  # Redondear a dos decimales
+  arrange(desc(avgPlaytime)) %>%  
+  slice(1:10) %>%                  
+  select(name, avgPlaytime) %>%    
+  mutate(avgPlaytime = round(avgPlaytime, 2))  
 
-# Mostrar el resultado con kable
+
 top_ten_games |> 
   kable(caption = "Los 10 juegos con más horas de juego") |> 
   kable_styling(full_width = F)
 
 ```
+
 ### Estudio de la variable REVIEWSCORE
 
 ```{r}
@@ -533,12 +405,20 @@ cat("La cantidad de respuestas obtenidas es:", num_respuestas_SCORE)
 
 ```
 
-Esta variable tiene sentido estudiarla para más adelante poder ver como se relaciona con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas.
+
+Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas por rangos debido a la cantida de valores que hay.
 
 ```{r}
 
+max_val <- max(lab$reviewScore)
+max_val <- min(max_val, 100)
+lab$reviewScore_rango <- cut(lab$reviewScore, 
+                             breaks = c(0, 1, seq(5, max_val, by = 5)),
+                             right = FALSE, 
+                             include.lowest = TRUE,
+                             labels = c("0", paste(seq(1, max_val-4, by = 5), seq(5, max_val, by = 5)-1, sep = "-")))
 tabla_frecuencias_score <- lab |>
-  count(reviewScore) |>
+  count(reviewScore_rango) |>
   mutate(f = n / nrow(lab), N = cumsum(n), F = cumsum(f))
 tabla_frecuencias_ordenada4 <- tabla_frecuencias_score |> 
   arrange(desc(n))
@@ -548,13 +428,23 @@ print(tabla_frecuencias_ordenada4)
 
 ```
 
+
+Como se puede observar hay bastantes valores de 0 que como hemos comentado debe tratarse de un error. Por ello, lo hemos sacado fuera de los rangos y para continuar con el estudio, eliminaremos ese valor para poder realizarlo de una manera más fiel a la realidad. Para esto, utilizaremos el siguiente código.
+
+```{r}
+
+labNo0 <- subset(lab, reviewScore != 0)
+
+```
+
+
 A continuación, realizaremos un histograma mediante el siguiente código.
 
 ```{r}
 
-datos <- lab$reviewScore 
+datos <- labNo0$reviewScore 
 ggplot(data.frame(x = datos), aes(x = x)) +
-  geom_histogram(binwidth = 1, fill = "skyblue", color = "black", 
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white", 
                  aes(y = ..density..), alpha = 0.6) +
   stat_function(fun = dnorm, args = list(mean = mean(datos), 
                                          sd = sd(datos)), color = "red", size = 1.5) +
@@ -564,15 +454,17 @@ ggplot(data.frame(x = datos), aes(x = x)) +
 
 ```
 
-Además de este histograma debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
+
+Además de este histograma, debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
 
 ```{r}
 
-lab |> select(reviewScore) |> descr() |> kable(digits = 2)
+labNo0 |> select(reviewScore) |> descr() |> kable(digits = 2)
 
 ```
 
-Lo primero que llama la atención en el histograma, es la cantidad de puntuaciones 0 que hay. Esto hace que la moda disminuya mucho, ya que sin esos valores, sería mucho más alta. Además se puede observar que la mayoria de notas están comprendidas entre 66 y 100 de puntuación, obviando el 0.
+
+Podemos observar como las puntuaciones por lo general, son extremadamente altas. Esto se puede deber a que el dataset es sobre los 1500 mejores juegos según su recaudación, por lo que podemos entender que son buenos juegos. Además, estas valoraciones son puestas por los usuarios y no por críticos profesionales.
 
 ### Estudio de la variable PUBLISHERCLASS
 
@@ -580,44 +472,55 @@ Ahora analizaremos la variable "publisherclass". En esta variable, veremos las d
 
 ```{r}
 
-# Calcular las frecuencias absolutas y relativas
 tabla_frecuencias_publisherclass <- lab |>
   count(publisherClass) |>
   mutate(f = n / nrow(lab)) 
 
-
-# Mostrar la tabla
-print(tabla_frecuencias_ordenada3)
+print(tabla_frecuencias_publisherclass)
 
 ```
+
 
 Para observar estos datos con mayor claridad, utilizaremos una gráfica en función de la frecuencia relativa con el siguiente código.
 
 ```{r}
 
-lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Frequency = Frequency/sum(Frequency), publisherClass = reorder(publisherClass, -Frequency)) |> ggplot(aes(x = publisherClass, y = Frequency)) + geom_bar(stat = "identity", aes(fill = Frequency)) + scale_y_continuous(labels = scales::percent) + theme_bw() + labs(title = "Gráfico de barras con frecuencia relativa de PUBLISHERCLASS", x = "Tipo de empresa", y = "Frecuencia relativa") + scale_fill_gradient("Frecuencia", low = "steelblue", high = "#CB0017") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-Además, se puede hacer un gráfico con las frecuencias abosultas mediante el siguiente código.
+
+
+Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se puede observar un caso asilado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.  
+
+
+### Estudio de la variable PUBLISHERS
+
+A continuación analizamos la variable "publishers" mediante un gráfico de barras que muestra la frecuencia de los 10 publishers más representativos según la cantidad de juegos publicados en Steam. Primero contamos los videojuegos por publisher y seleccionamos los 10 más comunes y luego creamos en gráfico de barras con esos datos.
 
 ```{r}
 
-lab |>
-  group_by(publisherClass) |>
-  summarise(Frequency = n()) |>
-  mutate(publisherClass = reorder(publisherClass, -Frequency)) |>
-  ggplot(aes(x = publisherClass, y = Frequency)) +
-  geom_bar(stat = "identity", aes(fill = Frequency)) +
-  theme_bw() +
-  labs(title = "Gráfico de barras con frecuencia absoluta de TYPE",
-       x = "Tipo de casa",
-       y = "Frecuencia absoluta") +
-  scale_fill_gradient("Frecuencia", low = "skyblue", high = "#CB0017") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+top_publishers <- lab %>%
+
+  count(publishers) %>%
+
+  top_n(10, n)  
+
+ggplot(top_publishers, aes(x = reorder(publishers, n), y = n)) +
+
+  geom_bar(stat = "identity", fill = "steelblue", color = "white") +
+
+  labs(title = "Top 10 Publishers por Número de Videojuegos",
+
+       x = "Publisher",
+       y = "Número de Videojuegos") +
+
+  theme_minimal() +
+  coord_flip()  
 
 ```
-Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se puede observar un caso asilado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.  
 
+
+En esta gráfica podemos ver los 10 publishers que tienen una influencia notable en Steam debido al volumen de títulos publicados.
 
 ### Estudio de la variable DEVELOPERS
 
@@ -628,34 +531,25 @@ Realmente para nuestro estudio no es de gran importancia, aun así, crearemos un
 ```{r}
 
 table(lab$developers) |> 
-  # Convierte la tabla de frecuencias en un dataframe.
   as.data.frame() |> 
   
   arrange(desc(Freq)) |> 
-  # Selecciona solo los 10 desarrolladores más frecuentes.
   slice(1:10) |> 
-  # Añade una nueva columna 'F' calculando la frecuencia relativa acumulada.
   mutate(F = cumsum(Freq)/sum(Freq)) |> 
-  # Convierte el dataframe resultante en una tabla 'gt' para formateo y estilización avanzados.
   gt() |>  
   
-  # Añade un título en cursiva y negrita a la tabla de frecuencias
   tab_header(
     title = md("**_Los 10 desarrolladores más frecuentes_**")
   ) |>
   
-  # Cambia las etiquetas de las columnas a notación matemática.
-  cols_label(Var1 = "Desarrollador",  # Cambia 'Var1' a 'Desarrollador' (nombres individuales).
-             Freq = "Frecuencia",  # Cambia 'Freq' a 'Frecuencia' (representando la frecuencia de cada valor).
-             F = "Frecuencia relativa acumulada") |>  # Cambia 'F' al nombre completo en español.
+  cols_label(Var1 = "Desarrollador",  
+             Freq = "Frecuencia",  
+             F = "Frecuencia relativa acumulada") |>  
   
-  # Formatea los números a mostrar cuatro decimales.
   fmt_number(3, decimals = 4) |> 
-  # Aplica un estilo de texto en negrita a la fila de encabezado de la tabla.
   tab_style(style = list(
     cell_text(weight = "bold")),  
     locations = cells_column_labels())
-
 
 ```
 
@@ -663,25 +557,35 @@ En la tabla podemos observar claramente los 10 desarrolladores más frecuentes e
 Como ya hemos mencionado, esta variable no será de gran importancia a la hora de responder a nuestras preguntas y de cumplir nuestro objetivo final de la práctica.
 
 
+## Datos bivariantes
 
-<<<<<<< Updated upstream
-### Box-plot
-=======
-###Estudio de las variables COPIESSOLD Y REVENUE
+### Gráfico de correlación numérica
+
+```{r}
+labNo0 |> select(copiesSold, revenue, price, reviewScore, avgPlaytime) |> 
+  cor() |> 
+  corrplot(method = "ellipse",  # Usa elipses para representar correlaciones
+           type = "lower",  # Muestra solo la mitad inferior de la matriz
+           addCoef.col = "steelblue",  # Color de los coeficientes de correlación
+           diag = FALSE)  # Omite la diagonal principal
+```
+
+Aunque la única relación notable que puede haber es la recaudación con el número de copias vendidas, hemos decidido realizar un análisis bivariante entre recaudación con el resto de variables, ya que es el objetivo de nuestro estudio.
+
+### Estudio de las variables COPIESSOLD Y REVENUE
 
 Antes de comenzar con el analisis bivariante de "copiesSold" y "revenue" vamos a hacer un resumen de ambas variables para saber la cantidad de copias vendidas y la recaudación promedio, los valores mínimos y máximos, o los valores faltantes en caso de que los haya. Esto se hace con el objetivo de conocer mejor sus valores y distribución.
 
 ```{r}
+
 sum(is.na(lab$copiesSold))
 sum(is.na(lab$revenue))
 
 summary(lab$copiesSold)
 summary(lab$revenue)
-
 ```
 
 A continuación, vamos a realizar un gráfico de dispersión para así saber si hay una relación visual en ambas variables.
-
 ```{r}
 ggplot(lab, aes(x = copiesSold, y = revenue)) +
   geom_jitter(color = "blue", size = 1, width = 0.2, height = 0, alpha = 0.7) +
@@ -705,6 +609,7 @@ ggplot(lab, aes(x = copiesSold, y = revenue)) +
   theme_minimal()
 ```
 
+
 Tras esto, calcularemos la correlación entre "copiesSold" y "revenue" para determinar si su relación es fuerte o débil, y representaremos el resultado en forma de tabla.
 
 ```{r}
@@ -718,179 +623,267 @@ correlacion_df %>%
   kable_styling(full_width = F)
 ```
 
+
 El resultado de la correlación es de 0.63, lo que indica una relación positiva significativa, aunque no muy fuerte. 
 
-Por último, se realizará un modelo de regresión lineal para analizar cómo cambia la recaudación en función de las copias vendidas.
+Por último, se realizará un modelo de regresión lineal para analizar cómo varía la recaudación en función de las copias vendidas. Para ello, se han eliminado varios puntos atípicos con valores muy altos tanto en las Copias Vendidas como en la Recaudación.
 
 ```{r}
 
-modelo <- lm(revenue ~ copiesSold, data = lab)
+umbral_copiesSold <- 10e6
+umbral_revenue <- 200e6
+
+lab_filt <- lab %>%
+  filter(copiesSold <= umbral_copiesSold & revenue <= umbral_revenue)
+
+modelo <- lm(revenue ~ copiesSold, data = lab_filt)
 
 summary(modelo)
 
-ggplot(lab, aes(x = copiesSold, y = revenue)) +
-  geom_point(size = 2, alpha = 0.7) +
+ggplot(lab_filt, aes(x = copiesSold, y = revenue)) +
+  geom_point(size = 2, alpha = 0.7) +  
   geom_smooth(method = "lm", color = "blue") +
   scale_x_continuous(labels = function(x) {
     ifelse(x >= 1e6, 
            paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
            ifelse(x >= 1e3, 
-                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"),
-                  format(x)))  # Menos de mil
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
   }) +
   scale_y_continuous(labels = function(x) {
     ifelse(x >= 1e6, 
            paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
            ifelse(x >= 1e3, 
-                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"),
-                  format(x)))  # Menos de mil
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
   }) +
   labs(title = "Regresión Lineal: Copias Vendidas vs Recaudación",
        x = "Copias Vendidas",
        y = "Recaudación (en miles de dólares)") +
   theme_minimal()
-
 ```
 
-Como se puede observar, las variables "copiesSold" y "revenue" se relacionan cuando el número de copias vendidas es inferior a 5 millones. La recaudación depende, aunque no exclusivamente, de las copias vendidas, pero a medida que se venden más copias, la relación entre ambas variables se vuelve más débil.
->>>>>>> Stashed changes
 
-Ahora, emplearemos box-plots para examinar la dispersión y los valores atípicos en nuestras variables cuantitativas. Estos gráficos nos ofrecen una visión detallada de la distribución de los datos.
+Como se puede observar, las variables copiesSold y revenue muestran una relación más fuerte cuando el número de copias vendidas es inferior a 2,5 millones. Esto sugiere que, aunque la recaudación depende en gran medida de las copias vendidas,pero no de forma exclusiva, ya que, dicha relación tiende a debilitarse a medida que el número de copias vendidas aumenta.
 
-Utilizamos un box-plot para visualizar la distribución de la variable 'ph' en nuestro conjunto de datos, proporcionando una clara representación de la mediana, los cuartiles y los valores atípicos.
+### Estudio de las variables PRICE Y REVENUE
+
+En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra y descartar posibles outliers.
 
 ```{r}
-# 'lab |> ggplot(aes(x= "ph", y = ph)) +' inicia una visualización ggplot2 usando el dataframe 'lab'.
-lab |> 
-  ggplot(aes(x= "ph", y = ph)) +  # Configura las estéticas del gráfico.
-    # 'aes()' define cómo se asignarán variables a estéticas visuales en el gráfico.
-    # 'x= "ph"' establece una constante para el eje x. 
-    # 'y = ph' asigna la columna 'ph' del dataframe 'lab' al eje y.
 
-  # 'geom_boxplot()' añade un gráfico de cajas al gráfico.
-  # Esta función crea un diagrama de cajas que es útil para visualizar la distribución de una variable cuantitativa.
-  geom_boxplot()+ 
-
-  # 'theme_bw()' aplica un tema en blanco y negro para la visualización.
-  # Este tema proporciona un fondo claro y líneas oscuras, lo que resulta en un gráfico con alto contraste y fácil de leer.
-  theme_bw()
-
-```
-
-
-### Análisis numérico
-
-Procedemos a realizar un análisis numérico detallado de nuestras variables, empleando estadísticas descriptivas para obtener una comprensión más profunda de los datos.
-
-Calculamos estadísticas descriptivas para todas las variables numéricas en nuestro conjunto de datos, excluyendo la variable 'codigo'. Este paso nos proporciona un resumen numérico detallado de las características de los datos.
-
-```{r}
-lab |> select(where(is.numeric), -codigo) |>  # Selecciona solo las variables numéricas, excluyendo 'codigo'
-  drop_na() |>  # Elimina filas con valores NA
-    descr() # 'descr' es la función que se aplica. Calcula estadísticas descriptivas para todas las variables numéricas.
-```
-
-
-### Tipificación
-
-En esta sección, nos enfocamos en la tipificación de nuestros datos, un proceso que nos permite estandarizar las variables y compararlas en una escala común.
-
-Aquí, calculamos y examinamos los puntajes z para la variable 'ph'. Esto nos permite entender cómo se distribuyen los valores de 'ph' en relación con la media y la desviación estándar de la muestra.
-
-```{r}
-# 'z_ph <- scale(lab$ph)' calcula el puntaje z para la columna 'ph' del dataframe 'lab'.
-z_ph <- scale(lab$ph)
-  # 'scale()' es una función en R que estandariza los datos.
-  # Resta la media y divide por la desviación estándar, resultando en datos con una media de 0 y una desviación estándar de 1.
-  # Esto es útil para normalizar datos, especialmente en preparación para ciertos análisis estadísticos.
-
-# 'mean(z_ph)' calcula la media de los puntajes z de 'ph'.
-mean(z_ph)
-```
-
-Dado que los datos han sido estandarizados, la media debería ser muy cercana a 0. Esto verifica que la estandarización se ha realizado correctamente.
+  price_filtrado_breaks <- seq(min(lab_filtrado$price), max(lab_filtrado$price), length.out = 8)
+  lab_filtrado$price_intervalos <- cut(lab_filtrado$price, breaks = price_filtrado_breaks, include.lowest = TRUE)  
   
-```{r}
-# 'sd(z_ph)' calcula la desviación estándar de los puntajes z de 'ph'.
-sd(z_ph)
+  revenue_breaks <- c(20000, 5000000, 50000000, 85000000, 150000000, 250000000, 335000000, 500000000, 585000000, 650000000, 755000000, 850000000)
+  revenue_labels <- c("[20k-5M]", "(5M-50M]", "(50M-85M]", "[85M-150M]", "(150M-250M]", "(250M-335M]", "(335M-500M]", "(500M-585M]", "(585M-650M]", "(650M-755M]", "(755M-850M]")
+  lab_filtrado$revenue_intervalos <- cut(lab_filtrado$revenue, breaks = revenue_breaks, labels = revenue_labels, include.lowest = TRUE)
+  
+  tabla_abs_priceRevenue <- table(lab_filtrado$revenue_intervalos, lab_filtrado$price_intervalos)
 
+  tabla_rel_priceRevenue <- prop.table(tabla_abs_priceRevenue) * 100
+  
+  tabla_contingencia_priceRevenue <- matrix(paste(tabla_abs_priceRevenue, "(", round(tabla_rel_priceRevenue, 2), "%)", sep = ""),
+                            nrow = nrow(tabla_abs_priceRevenue), ncol = ncol(tabla_abs_priceRevenue))
+
+  rownames(tabla_contingencia_priceRevenue) <- rownames(tabla_abs_priceRevenue)
+  colnames(tabla_contingencia_priceRevenue) <- colnames(tabla_abs_priceRevenue)
+
+  kable(tabla_contingencia_priceRevenue, caption = htmltools::tags$div(style = "text-align: center;", 
+                                     htmltools::tags$h4(htmltools::tags$strong("y: beneficios(dólares) // x: precio(dólares)")))) |>
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el resto de intervalos no tienen un peso significativo a considerar en este análisis, por lo que vamos a realizar un filtrado de la variable hasta los 5M $ de beneficio para quedarnos únicamente con el primer intervalo, eliminando un total de 69 muestras del dataset.
+
+```{r}
+  lab_filtrado2 <- lab_filtrado[lab_filtrado$revenue <= 5000000,]
+
+
+  revenue_filtrado2 <- lab_filtrado2$revenue_intervalos
+  
+  revenue_breaks2 <- c(20000, 50000, 100000, 250000 ,500000, 1000000, 5000000)
+
+  revenue_labels2 <- c("[20k-50k]", "(50k-100k]", "(100k-250k]", "(250k-500k]", "(500k-1M]", "(1M-5M]")
+  
+  lab_filtrado2$revenue_intervalos <- cut(lab_filtrado2$revenue, breaks = revenue_breaks2, labels = revenue_labels2, include.lowest = TRUE)
+  
+  tabla_abs_priceRevenue2 <- table(lab_filtrado2$revenue_intervalos, lab_filtrado2$price_intervalos)
+
+  tabla_rel_priceRevenue2 <- prop.table(tabla_abs_priceRevenue2) * 100
+  
+  tabla_contingencia_priceRevenue2 <- matrix(paste(tabla_abs_priceRevenue2, "(", round(tabla_rel_priceRevenue2, 2), "%)", sep = ""),
+                            nrow = nrow(tabla_abs_priceRevenue2), ncol = ncol(tabla_abs_priceRevenue2))
+
+  rownames(tabla_contingencia_priceRevenue2) <- rownames(tabla_abs_priceRevenue2)
+  colnames(tabla_contingencia_priceRevenue2) <- colnames(tabla_abs_priceRevenue2)
+
+  kable(tabla_contingencia_priceRevenue2, caption = htmltools::tags$div(style = "text-align: center;", 
+                                     htmltools::tags$h4(htmltools::tags$strong("y: beneficios(dólares) // x: precio(dólares)")))) |>
+  kable_styling(latex_options = c("striped", "hold_position"))
+  
+```
+
+Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0$ y 20$).
+
+Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica obtener beneficios menores.
+
+
+A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) con el dataset total y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal con el dataset filtrado a 5M $ de beneficios.
+
+```{r}
+  lab_filtrado |>
+  
+  ggplot(aes(x = revenue, y = price)) +
+  geom_point() +
+  geom_smooth() +
+  labs(title = "Gráfico de dispersión con ajuste de regresión automático:") +
+  scale_x_continuous(breaks = c(0, 200000000, 400000000, 600000000, 800000000), labels = c("0", "200M", "400M", "600M", "800M"))
+```
+
+```{r}
+  lab_filtrado2 |> 
+  
+  ggplot(aes(x = revenue, y = price)) +
+  geom_point() +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(title = "Gráfico de dispersión con ajuste de regresión lineal:")+
+  scale_x_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000, 5000000), labels = c("0", "1M", "2M", "3M", "4M", "5M"))
+```
+
+Cabe destacar, que en la primera gráfica, la mayoría de datos se concentran en una zona y la dispersión de puntos es tan elevada para los beneficios altos que la interpretación de la recta se vuelve prácticamente imposible, mientras que en la segunda gráfica podemos denotar un aumento positivo y progresivo de los beneficios en cuanto el precio aumenta.
+
+Para mayor comprensión de ambos gráficos, mostramos el siguiente resumen numérico:
+
+```{r}
+  summary(lab_filtrado2 |> select(revenue, price) |> with(lm(revenue ~ price)))
+```
+
+Aproximadamente, a través de los valores del resumen (Estimate Std. (revenue) = 131002 // Estimate Std. (price) = 16368) la recta de nuestro modelo ajustado es la siguiente:
+
+`revenue = 16368 × price + 131002`
+
+Lo que nos indica una función lineal creciente, donde los beneficios aumentan a medida que los precios aumentan. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería de 131002$.
+
+```{r}
+  cor(lab_filtrado2$price, lab_filtrado2$revenue)
+```
+En cuanto a la correlación de una variable con otra y predictibilidad del modelo creado, el valor del coeficiente de correlación lineal (0.25) nos sugiere una relación lineal positiva débil entre price y revenue y el valor R-squared (0.0619) indica que el 6.19% de la variabilidad de los beneficios es explicada por el precio, lo cual es un porcentaje extremadamente bajo. 
+
+Esto sugiere que, el precio no afecta directamente a los beneficios y, que hay otros factores que también influyen en los beneficios que deberemos tener en cuenta en nuestro modelo. Además, se trata de un modelo poco preciso, ya que el valor del Residual standard error (721900) nos indica que la varianza residual es de 849.65, cuyo valor es muy elevado.
+
+A continuación se muestra la matriz de varianzas y covarianzas del modelo:
+
+```{r}
+  summary(lab_filtrado2 |> select(revenue, price) |> with(lm(revenue ~ price))) |>
+  vcov()
+```
+Dicha matriz nos indica una varianza muy elevada tanto como para revenue (1149614621) como para price (2843591) y una covarianza de -47250453, lo que reafirma nuestra teoría de que no hay una relación fuerte ni concisa entre ambas variables.
+
+
+### Estudio de las variables AVGPLAYTIME Y REVENUE
+
+Lo primero de todo, para saber si hay una relación fuerte entre el tiempo de juego de las personas (avgPlaytime)y la recaudación (revenue), vamos a utilizar una tabla de correlación.
+
+```{r}
+
+correlacion <- cor(lab$avgPlaytime, lab$revenue, use = "complete.obs")
+
+correlacion_df <- data.frame(Variable1 = "avgPlaytime", 
+                             Variable2 = "revenue", 
+                             Correlacion = round(correlacion, 2))
+
+correlacion_df %>%
+  kable(caption = "Correlación entre el tiempo de juego medio y la recaudación") %>%
+  kable_styling(full_width = F)
 
 ```
 
-La desviación estándar de los datos estandarizados debería ser cercana a 1. Esto también sirve como verificación de la estandarización.
 
+La tabla nos indica que la correlación entre ambas variables es de 0.08, es decir, una cifra cercana a 0. Esto nos dice que la relación entre ambas variables es muy débil o inexistente.
 
-### Discretización 
+Los juegos con menos horas de juego pueden tener precios altos y al contrario, los juegos muy largos pueden atraer a jugadores que invierten más tiempo, pero sin tener que gastar más dinero.
 
-Finalmente, abordamos la discretización de nuestras variables, un método que nos permite convertir variables cuantitativas en categorías, facilitando ciertos tipos de análisis.
+A continuación, vamos a visualizar un gráfico de dispersión para poder ver la relación entre las variables de forma más clara y directa.Los puntos en el gráfico representan diferentes juegos, donde el eje "x" indica el tiempo promedio de juego, y el eje "y" representa la recaudación total obtenida por esos juegos.
 
-Comenzamos creando categorías para la variable 'est', dividiéndola en 8 intervalos. Luego, contamos la frecuencia de observaciones en cada intervalo para obtener una visión clara de cómo se distribuyen los valores de 'est'.
+Para obtener una mejor comprensión visual, se ha utilizado una escala logarítmica en el eje de recaudación debido a la amplia variación en las cifras de ingresos, que van desde valores muy bajos hasta cientos de millones. Esto nos permite que los datos sean más visibles y comparables.
+
 
 ```{r}
-# Transforma 'lab' creando una nueva columna 'clases_est' que clasifica 'est' en 8 intervalos
 lab |> 
-  mutate(clases_est = cut(est, breaks = 8)) |> 
-  # Cuenta la frecuencia de cada clase en 'clases_est'
-  count(clases_est)
+  ggplot(aes(x = avgPlaytime, y = revenue)) +
+  
+  geom_point(alpha = 0.7, color = "blue") +
+  
+  scale_y_log10() +
+  
+  xlim(0, 300) +
 
-# Utiliza 'knitr::kable' para crear una tabla formateada de la tabla de proporciones de 'imperfecciones'
-knitr::kable(
-  # Calcula la tabla de proporciones para la columna 'imperfecciones' en 'lab'
-  prop.table(table(lab$imperfecciones)), 
-  # Redondea los números a 4 decimales
-  digits = 4
-)
+  labs(
+    x = "Tiempo promedio de juego (horas)",
+    y = "Recaudación (log scale)",
+    title = "Relación entre Tiempo de Juego y Recaudación en Steam"
+  ) +
+
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
+  )
 
 ```
 
-En este paso, generamos intervalos para 'ph' y creamos una tabla de frecuencias para estos intervalos, incluyendo la frecuencia relativa y acumulada.
+El gráfico muestra una concentración de juegos con un tiempo promedio bajo (cercano a 0 horas), y una gran dispersión en los valores de recaudación. Sin embargo, a pesar de que algunos juegos tienen tiempos de juego elevados (cercanos a las 300 horas), estos no necesariamente generan más ingresos que otros con menos tiempo jugado.
+
+Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
+
+
+A modo de conclusión podemos decir que el tiempo de juego influye de forma mínima en la recaudación.
+
+
+### Estudio de las variables REVIEWSCORE Y REVENUE
+A continuación vamos a analizar  si la puntuación asociada al videojuego afecta realmente a la recaudación. Para ello vamos a utilizar una gráfica de dispersión mediante la cual se verá la cantidad de videojuegos beneficiados por su puntuación.
 
 ```{r}
-# Genera un histograma de la columna 'ph' del dataframe 'lab', pero no lo dibuja (plot = FALSE).
-# El resultado se guarda en 'histo', que contiene, entre otros, los límites de los intervalos (breaks).
-histo <- hist(lab$ph, plot = FALSE)
 
-# Actualiza el dataframe 'lab' mediante 'mutate' para añadir una nueva columna 'clase'.
-# 'cut' se utiliza para dividir la columna 'ph' en intervalos basados en los límites encontrados en 'histo$breaks'.
-lab <- lab |> 
-  mutate(clase = cut(ph, breaks = histo$breaks))
+ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
 
-# Añade un nivel adicional "(6.4,6.45]" a los factores de la columna 'clase'.
-# Esto es para incluir valores específicos que no estaban originalmente en los intervalos generados por 'hist' porque su suma es frecuencia es 0.
-levels(lab$clase) <- c(levels(lab$clase), "(6.4,6.45]")
+  geom_point(alpha = 0.5) +  
 
-# Calcula la tabla de frecuencias para 'lab$clase' y la convierte en un dataframe.
-tabla_frecuencias <- as.data.frame(table(lab$clase))
+  labs(title = "Relación entre Puntuación y Recaudación",
 
-# Añade una columna para la frecuencia relativa (f) y los acumulados (N y F) redondeado a 0.
-tabla_frecuencias <- tabla_frecuencias |> 
-  mutate(
-    f = round(Freq / sum(Freq), 4), # Frecuencia relativa redondeada a cuatro decimales
-    N = cumsum(Freq),               # Frecuencia acumulada
-    F = round(cumsum(f), 4)         # Frecuencia relativa acumulada redondeada a cuatro decimales
-  )
+       x = "Puntuación",
+       y = "Recaudación") +
 
-# Usa 'flextable' para crear una tabla flexible a partir de 'tabla_frecuencias'.
-flextable(tabla_frecuencias) |>
-  # Personaliza los encabezados de la tabla.
-   flextable::set_header_labels(
-      Var1 = "Clase",
-      Freq = "n",
-      f = "Frecuencia Relativa",
-      N = "Frecuencia Acumulada",
-      F = "Frecuencia Relativa Acumulada"
-  )
-
+  theme_minimal()  # Usar un tema minimalista
 
 ```
 
+Podemos apreciar cómo la mayoría de puntos se agrupan en la parte baja de la gráfica indicando que pese a  la puntuación alta que puedan tener, son pocos los que tienen recaudaciones altas. Lo que sí queda claro es que de los juegos con poca puntuación, ninguno sobresale. De todas formas comprobemos mediante un análisis de regresión para obtener un modelo cuantitativo.
 
+```{r}
 
+modelo <- lm(revenue ~ reviewScore, data = labNo0) 
 
+summary(modelo)  
 
-## Datos bivariantes
+ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
 
-Ahora, exploraremos las relaciones bivariantes en nuestro conjunto de datos, observando cómo las variables interactúan entre sí. Esto incluye examinar las relaciones entre pares de variables tanto discretas como continuas.
+  geom_point(alpha = 0.5) +  
+
+  geom_smooth(method = "lm", color = "blue") +  
+
+  labs(title = "Relación entre Puntuación y Recaudación con Línea de Regresión",
+
+       x = "Puntuación",
+       y = "Recaudación") +
+
+  theme_minimal()
+
+```
+
+Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación  que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
+
 
 ### Estudio de las variables PUBLISHERCLASS Y REVENUE
 En este apartado, queremos comprobar si el tipo de empresa afecta a la recaudación. Para ello, vamos a utilizar una gráfica box-plot y un gráfico de barras para que sea más visual.
@@ -917,13 +910,14 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
   theme_minimal()
 
 ```
+
 Debido a la disparidad entre las muestras que tenemos, necesitaremos aplicar una escala logarítmica para evitar la asimetría en dichas muestras ya que la distribuición es muy sesgada.
 
 ```{r}
 
 ggplot(lab, aes(x = publisherClass, y = revenue)) +
   geom_boxplot(fill = "lightblue", color = "darkblue") +
-  scale_y_log10() +  # Aplica una escala logarítmica al eje Y
+  scale_y_log10() +  
   labs(title = "Distribución de la Recaudación por Tipo de Empresa (Escala Logarítmica)",
        x = "Tipo de Empresa",
        y = "Recaudación (log)") +
@@ -934,578 +928,31 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
 Aquí podemos observar como sí hay juegos "Indie" con una recaudación superior a la media del resto de empresas, pero son casos aislados y la mayor parte de los "Indies", generan mucho menos que los juegos "AAA" y "AA". 
 
 
-### Estudio de las variables PRICE Y REVENUE
-En primer lugar, con el objetivo de comprender cómo varían los beneficios en cuanto al precio de los juegos de nuestra muestra y distinguir si hay una correlación entre dichas características, vamos a realizar una tabla de contingencia para ambas variables, donde podremos observar la frecuencia absoluta y los porcentajes (frec. relativa) de una variable frente a la otra.
-
-```{r}
-
-  # Convertir las variables continuas en categorías, con intervalos cerrados a la izquierda y abiertos a la derecha
-  lab$logrevenue <- log10(lab$revenue)
-
-  # Definir los intervalos logarítmicos
-  # Elige un rango adecuado en la escala logarítmica para crear los intervalos.
-  lab$revenue_cat_log <- cut(lab$logrevenue, breaks = seq(floor(min(lab$logrevenue)), 
-                                       ceiling(max(lab$logrevenue)), by = 0.5), include.lowest = TRUE, right = FALSE)
-  
-  # Crear etiquetas para los intervalos con el formato logarítmico y su equivalente en la escala original
-  # Usamos 'paste0' para crear etiquetas que incluyan ambas escalas.
-  lab$revenue_intervalos_etiquetas <- sapply(levels(lab$revenue_cat_log), function(x) {
-    rango_log <- as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(x, ","))))
-    paste0("log10([", round(10^rango_log[1], 0), ", ", round(10^rango_log[2], 0), ")) = ", x ,"")
-  })
-
-  # Reemplazar los niveles de 'copiesSold_intervalos_log' por las nuevas etiquetas
-  levels(lab$revenue_cat_log) <- lab$revenue_intervalos_etiquetas
-  
-  price_cat <- cut(lab$price, breaks = seq(0, 100, by = 5), right = FALSE)  # 4 intervalos para y
-  
-  # Tabla de frecuencias absolutas
-  tabla_abs_priceRevenue <- table(lab$revenue_cat_log, price_cat)
-  
-  # Frecuencias relativas (porcentajes)
-  tabla_rel_priceRevenue <- prop.table(tabla_abs_priceRevenue) * 100
-  
-  # Crear tabla combinada con frecuencias absolutas y relativas
-  tabla_contingencia_priceRevenue <- matrix(paste(tabla_abs_priceRevenue, "(", round(tabla_rel_priceRevenue, 2), "%)", sep = ""),
-                            nrow = nrow(tabla_abs_priceRevenue), ncol = ncol(tabla_abs_priceRevenue))
-  
-  # Asignar nombres a filas y columnas
-  rownames(tabla_contingencia_priceRevenue) <- rownames(tabla_abs_priceRevenue)
-  colnames(tabla_contingencia_priceRevenue) <- colnames(tabla_abs_priceRevenue)
-  
-  # Mostrar la tabla combinada
-  kable(tabla_contingencia_priceRevenue)
-  
-```
-Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0$ y 20$).
-
-Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica beneficios menores.
-
-
-A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal.
-
-```{r}
-lab |>
-  ggplot(aes(x = logrevenue, y = price)) +
-  geom_point() +
-  geom_smooth() +
-  labs(title = "Gráfico de dispersión con ajuste de regresión")
-```
-```{r}
-lab |> 
-  ggplot(aes(x = logrevenue, y = price)) +
-  geom_point() +
-  geom_smooth(method = lm, se = FALSE) +
-  labs(title = "Gráfico de dispersión con ajuste de regresión lineal")
-```
-En cuanto a los distintos ajustes de la recta, no hay una diferencia significativa entre un método y el otro. Según ambas rectas, a simple vista podemos denotar un aumento positivo y progresivo de los beneficios en cuanto al aumento del precio.
-
-
-Para mayor comprensión de ambos gráficos, mostramos el siguiente resumen numérico:
-
-```{r}
-  summary(lab |> select(logrevenue, price) |> with(lm(logrevenue ~ price)))
-```
-
-Aproximadamente, a través de los valores del resumen (Estimate Std (logrevenue) = 4.82304 // Estimate Std (price) = 0.02350) la recta en términos logarítmicos de nuestro modelo ajustado es la siguiente:
-
-`logrevenue = 0.02 × price + 4.82`
-
-
-Despejando el logaritmo, para una mejor interpretación, nos queda la siguiente recta:
-
-`revenue = (e ^ (0.02 * price)) × 123.97` 
-
-ó
-
-`revenue = (1.02 ^ price) × 123.97`
-
-Lo que indica una función exponencial creciente, donde a más aumentan los precios, los ingresos aumentan drásticamente; asímismo, con precios inferiores los ingresos incrementan muy lentamente. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería 123.97$.
-
-Analizando más valores del resumen tenemos que el modelo es altamente significativo estadísticamente para el estudio de la muestra debido a que el valor F-statistic (281.7) es alto  y el p-value (< 2.2e-16) es bajo; además, se trata de un modelo altamente preciso ya que el valor del Residual standard error(0.6856) es muy cercano al valor ideal (entorno a 0). 
-
-Por último, en cuanto a correlación de una variable con otra y predictibilidad del modelo creado, el valor R-squared (0.1583) indica que el 15.83% de la variabilidad en el logaritmo de los ingresos es explicada por el precio, el cual no es un porcentaje extremadamente alto. Esto sugiere que, si bien el precio afecta los ingresos, hay otros factores que también influyen en los ingresos que no están considerados en el modelo.
-
-
-### Estudio de las variables AVGPLAYTIME Y REVENUE
-
-Lo primero de todo, para saber si hay una relación fuerte entre el tiempo de juego de las personas (avgPlaytime)y la recaudación (revenue), vamos a utilizar una tabla de correlación.
-
-```{r}
-# Calcular la correlación entre avgPlayTime y revenue
-correlacion <- cor(lab$avgPlaytime, lab$revenue, use = "complete.obs")
-
-# Crear un dataframe para mostrar la correlación en formato de tabla
-correlacion_df <- data.frame(Variable1 = "avgPlaytime", 
-                             Variable2 = "revenue", 
-                             Correlacion = round(correlacion, 2))
-
-# Mostrar la tabla con kable
-
-correlacion_df %>%
-  kable(caption = "Correlación entre el tiempo de juego medio y la recaudación") %>%
-  kable_styling(full_width = F)
-
-
-```
-
-
-La tabla nos indica que la correlación entre ambas variables es de 0.08, es decir, una cifra cercana a 0. Esto nos dice que la relación entre ambas variables es muy débil o inexistente.
-
-Los juegos con menos horas de juego pueden tener precios altos y al contrario, los juegos muy largos pueden atraer a jugadores que invierten más tiempo, pero sin tener que gastar más dinero.
-
-
-
-A continuación, vamos a visualizar un gráfico de dispersión para poder ver la relación entre las variables de forma más clara y directa.Los puntos en el gráfico representan diferentes juegos, donde el eje "x" indica el tiempo promedio de juego, y el eje "y" representa la recaudación total obtenida por esos juegos.
-
-Para obtener una mejor comprensión visual, se ha utilizado una escala logarítmica en el eje de recaudación debido a la amplia variación en las cifras de ingresos, que van desde valores muy bajos hasta cientos de millones. Esto nos permite que los datos sean más visibles y comparables.
-
-```{r}
-lab |> 
-  ggplot(aes(x = avgPlaytime, y = revenue)) +
-  
-  # Añadir puntos
-  geom_point(alpha = 0.7, color = "blue") +
-  
-  # Usar escala logarítmica en el eje Y (revenue)
-  scale_y_log10() +
-  
-  # Ajustar los límites del eje X para mejorar la visualización
-  xlim(0, 300) +
-  
-  # Añadir etiquetas y un título más descriptivo
-  labs(
-    x = "Tiempo promedio de juego (horas)",
-    y = "Recaudación (log scale)",
-    title = "Relación entre Tiempo de Juego y Recaudación en Steam"
-  ) +
-  
-  # Mejorar el tema visual
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-    axis.title.x = element_text(face = "bold"),
-    axis.title.y = element_text(face = "bold")
-  )
-
- 
-
-```
-El gráfico muestra una concentración de juegos con un tiempo promedio bajo (cercano a 0 horas), y una gran dispersión en los valores de recaudación. Sin embargo, a pesar de que algunos juegos tienen tiempos de juego elevados (cercanos a las 300 horas), estos no necesariamente generan más ingresos que otros con menos tiempo jugado.
-
-Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
-
-
-Por último, para determinar de forma definitiva si el tiempo promedio de juego es un buen predictor de ingresos, vamos a observar un modelo de regresión.
-
-```{r}
-modelo <- lm(lab$revenue ~ lab$avgPlaytime)
-summary(modelo)  # Resumen del modelo de regresión
-```
-
-
-El valor estimado de Intercept es 1,295,594, lo que significa que si el tiempo promedio de juego fuera 0, la recaudación promedio  sería de aproximadamente 1.3 millones de unidades monetarias.
-
-La pendiente es 106,409, lo que significa que por cada hora adicional de tiempo promedio de juego, la recaudación promedio aumenta en 106,409 unidades monetarias.
-
-El valor p para avgPlaytime es 0.0014, lo que indica que hay una relación significativa entre las variables con un nivel de confianza del 99.86% (muy significativo dado que p<0.01).
-
-Esto significa que el efecto de avgPlaytime en revenue no es probablemente debido al azar.
-
-El R^2 es 0.006794, lo que indica que el tiempo promedio de juego explica solo el 0.68% de la variabilidad en los ingresos. Esto es muy bajo, lo que sugiere que hay otros factores importantes que afectan la recaudación y que el tiempo de juego por sí solo no es un buen predictor.
-
-A modo de conclusión podemos decir que el tiempo de juego influye de forma mínima en la recaudación.
-
-
-
-###CONTINGENCIA
-
-
-Primero, analizaremos las variables discretas creando tablas de contingencia, que nos ayudarán a entender las relaciones entre distintas categorías.
-
-Este código genera una tabla de contingencia absoluta entre 'analista' y 'tipo'. Nos permite ver cuántas veces cada tipo de queso ha sido analizado por cada analista.
-
-```{r}
-# Crea una tabla de contingencia absoluta entre las variables 'analista' y 'tipo' y la muestra en formato Markdown
-kable(table(lab$analista, lab$tipo))
-```
-
-Aquí, creamos una tabla de contingencia que muestra las frecuencias relativas para las mismas variables, proporcionando una perspectiva porcentual de la relación entre 'analista' y 'tipo'.
-
-```{r}
-# Crea una tabla de contingencia relativa (frecuencias relativas) para las mismas variables y la muestra con dos decimales
-kable(prop.table(table(lab$analista, lab$tipo)), digits = 2)
-```
-
-Este fragmento utiliza la función `ctable` del paquete 'summarytools' para crear una tabla de contingencia más avanzada, que nos dará una visión detallada de la frecuencia de cada combinación de 'tipo' y 'analista'.
-
-```{r}
-# Crea una tabla de contingencia usando la función 'ctable' del paquete 'summarytools'.
-tabla_contingencia <- summarytools::ctable(lab$tipo, lab$analista)
-  # 'summarytools::ctable' es una función del paquete 'summarytools' que se utiliza para crear tablas de contingencia.
-  # 'lab$tipo' y 'lab$analista' son las dos variables del dataframe 'lab' que se están comparando.
-  # La tabla de contingencia resultante mostrará la frecuencia de cada combinación de 'tipo' y 'analista'.
-
-```
-
-#### Distribuciones condicionadas
-
-En esta subsección, nos centramos en las distribuciones condicionadas dentro de nuestra tabla de contingencia para obtener insights más específicos.
-
-Este código filtra la tabla de contingencia para mostrar solo las entradas correspondientes a 'analista_13', permitiéndonos examinar de cerca los tipos de quesos que este analista ha revisado.
-
-```{r}
-
-# Selecciona la primera tabla de la lista 'tabla_contingencia', la convierte en un tibble y filtra por 'analista_13'.
-tabla_contingencia[[1]] |> 
-  # 'as_tibble()' convierte la tabla (que probablemente sea una matriz o dataframe) en un tibble, que es un tipo de dataframe moderno en R.
-  as_tibble() |> 
-  # 'filter(analista == 'analista_13')' filtra las filas donde la columna 'analista' es igual a 'analista_13'.
-  filter(analista == 'analista_13')
-
-```
-
-Aquí, realizamos un filtrado similar para la variable 'tipo', centrándonos específicamente en el tipo 'A' para ver qué analistas han trabajado con este tipo de queso.
-
-```{r}
-# Selecciona la primera tabla de la lista 'tabla_contingencia', la convierte en un tibble y filtra por 'tipo == 'A''.
-tabla_contingencia[[1]] |> 
-  # 'as_tibble()' convierte la tabla en un tibble.
-  as_tibble() |> 
-  # 'filter(tipo == 'A')' filtra las filas donde la columna 'tipo' es igual a 'A'.
-  filter(tipo == 'A')
-```
-
-
-### Tablas de contingencia: Variables continuas
-
-Ahora, nos movemos hacia las variables continuas, transformándolas en categorías y examinando sus relaciones a través de tablas de contingencia.
-
-Este fragmento de código primero determina los intervalos para las variables 'ph' y 'est' y luego crea una tabla de contingencia para estas variables categorizadas. La inclusión de totales nos proporciona una comprensión completa de cómo se distribuyen estas variables en relación con las demás.
-
-```{r}
-# Genera histogramas para las variables 'ph' y 'est' sin mostrar los gráficos, para determinar los intervalos de clase
-histo <- hist(lab$ph, plot = FALSE)
-histo2 <- hist(lab$est, plot = FALSE, breaks = 4)
-# Clasifica las variables 'ph' y 'est' en categorías basadas en los intervalos anteriores y añade estas categorías al dataframe
-lab <- lab |> 
-  mutate(clase_ph = cut(ph, breaks = histo$breaks)) |> 
-  mutate(clase_est = cut(est, breaks = histo2$breaks))
-# Ajusta manualmente los niveles de la variable 'clase_ph' para incluir un intervalo específico
-levels(lab$clase_ph) <- c(levels(lab$clase_ph), "(6.4,6.45]")
-
-# Crea una tabla de contingencia entre las categorías de 'ph' y 'est', añadiendo totales con addmargins(), y la muestra
-tabla <- table(lab$clase_ph, lab$clase_est) |> addmargins()
-tabla |> kable()
-```
-
-
-### Covarianza y correlación
-
-Finalmente, analizamos las relaciones numéricas entre variables mediante el cálculo de la covarianza y la correlación.
-
-Este código calcula la matriz de covarianza para todas las variables numéricas en nuestro conjunto de datos, proporcionando una visión de cómo varían conjuntamente las variables.
-
-```{r}
-lab |> select(where(is.numeric), -codigo) |>  # Selecciona solo las variables numéricas, excluyendo 'codigo'
-  drop_na() |>  # Elimina filas con valores NA
-  cov() |>  # Calcula la matriz de covarianzas
-  round(2)  # Redondea los resultados a 2 decimales
-```
-
-A continuación, calculamos y redondeamos la matriz de correlación para las mismas variables, que nos muestra la fuerza y la dirección de las relaciones lineales entre ellas.
-
-```{r}
-lab |> select(where(is.numeric), -codigo) |>  # Selecciona solo las variables numéricas, excluyendo 'codigo'
-  drop_na() |>  # Elimina filas con valores NA
-  cor() |>  # Calcula la matriz de correlación
-  round(2)  # Redondea los resultados a 2 decimales
-```
-
-Finalmente, visualizamos la matriz de correlación usando el método de 'ellipse', lo que facilita la interpretación visual de estas correlaciones.
-
-```{r}
-# 'lab |> select(where(is.numeric), -codigo)' selecciona las columnas numéricas del dataframe 'lab', excluyendo la columna 'codigo'.
-lab |> 
-  select(where(is.numeric), -codigo) |> 
-  # 'drop_na()' elimina todas las filas que contienen valores NA (faltantes).
-  drop_na() |> 
-  # 'cor()' calcula la matriz de correlación entre las columnas numéricas seleccionadas.
-  cor() |> 
-  # 'round(2)' redondea los coeficientes de correlación a dos decimales.
-  round(2) |> 
-  # 'corrplot()' visualiza la matriz de correlación.
-  corrplot(
-    method = "ellipse",  # 'method = "ellipse"' utiliza elipses para representar los coeficientes de correlación.
-    type = "lower",      # 'type = "lower"' muestra solo la mitad inferior de la matriz de correlación.
-    addCoef.col = "steelblue",  # 'addCoef.col = "steelblue"' establece el color de los coeficientes de correlación.
-    diag = FALSE         # 'diag = FALSE' omite la diagonal principal de la matriz, que siempre es 1.
-  )
-```
-
-
-### Gráficos de barras
-
-En esta sección, utilizamos gráficos de barras para explorar las relaciones entre dos variables categóricas, 'tipo' y 'analista'. Estos gráficos nos permiten visualizar la frecuencia de cada categoría de manera efectiva.
-
-Este gráfico de barras muestra la cantidad de cada tipo de queso analizado por cada analista, proporcionando una visión general de la distribución de los trabajos entre los analistas.
-
-```{r}
-# Gráficos de barras para frecuencias conjuntas
-# Crea un gráfico de barras para las variables 'tipo' y 'analista' usando ggplot2
-lab |> # Toma el dataframe 'lab'
-  ggplot(aes(x = tipo, fill = analista)) + # Inicializa ggplot2, asignando 'tipo' al eje x y coloreando por 'analista'
-  geom_bar() + # Añade un gráfico de barras, que por defecto cuenta la cantidad de cada 'tipo'
-  theme_bw() # Aplica un tema en blanco y negro para una visualización más clara y profesional
-```
-
-
-Este código mejora el gráfico de barras anterior separando las barras para cada analista dentro de cada tipo de queso, lo que facilita comparar la carga de trabajo de los analistas para cada tipo.
-
-```{r}
-lab |> # Toma el dataframe 'lab'
-  ggplot(aes(x = tipo, fill = analista)) + # Inicializa ggplot2, asignando 'tipo' al eje x y coloreando por 'analista'
-  geom_bar(position = position_dodge()) + # Añade un gráfico de barras con barras separadas por 'analista' dentro de cada 'tipo'
-  theme_bw() # Aplica un tema en blanco y negro para una visualización más clara y profesional
-```
-
-### Histogramas
-
-Los histogramas nos ayudan a comprender la distribución de variables continuas. Aquí, exploramos la variable 'ph' en función de la categoría de 'tipo'.
-
-Este histograma muestra la distribución del pH para diferentes tipos de queso, con colores distintos para cada tipo, lo que nos permite comparar visualmente cómo varía el pH entre los tipos.
-
-```{r}
-# Crear un histograma de 'ph' con colores basados en 'tipo'
-ggplot(lab, aes(x = ph, fill = tipo)) +
-  # Añadir la capa de histograma
-  geom_histogram(
-    bins = 15, 
-    alpha = 0.7,  # Ajusta la transparencia para mejor visualización
-    position = 'identity'  # Superpone las barras
-  ) +
-  # Definir los títulos de los ejes y el gráfico
-  labs(
-    title = "Histograma de pH por Tipo", 
-    x = "pH", 
-    y = "Frecuencia"
-  ) +
-  # Aplicar un tema
-  theme_bw() +
-  # Añadir leyenda (automáticamente generada por ggplot)
-  guides(fill=guide_legend(title="Tipo"))
-```
-
-
-### Gráficos de dispersión
-
-Los gráficos de dispersión son fundamentales para visualizar y entender las relaciones entre dos variables continuas.
-
-Este gráfico muestra la relación entre 'est' y 'mg', proporcionando una visión general de cómo estas dos variables se relacionan en todo el conjunto de datos.
-
-```{r}
-# Gráfico de dispersión
-# Crea un gráfico de dispersión para las variables 'est' y 'ph'
-lab |> 
-  # 'ggplot()' inicia una gráfica utilizando el paquete ggplot2. 'aes()' define las estéticas del gráfico, asignando 'est' al eje x y 'mg' al eje y.
-  ggplot(aes(x = est, y = mg)) +
-  # 'geom_point()' añade capas de puntos al gráfico, lo que crea un gráfico de dispersión con puntos representando las combinaciones de 'est' y 'mg'.
-  geom_point()
-
-```
-
-Añadimos una línea de tendencia a nuestro gráfico de dispersión para resaltar la relación general entre 'est' y 'mg', lo que puede indicar la presencia de una correlación.
-
-```{r}
-# Gráfico de dispersión
-# Crea un gráfico de dispersión para las variables 'est' y 'mg'
-lab |> 
-  # 'ggplot()' inicia una gráfica utilizando el paquete ggplot2. 'aes()' define las estéticas del gráfico, asignando 'est' al eje x y 'mg' al eje y.
-  ggplot(aes(x = est, y = mg)) +
-  # 'geom_point()' añade capas de puntos al gráfico, lo que crea un gráfico de dispersión con puntos representando las combinaciones de 'est' y 'mg'.
-  geom_point() +
-  # 'geom_smooth()' añade una línea de tendencia o ajuste al gráfico. Por defecto, realiza un ajuste de regresión lineal que muestra la tendencia general entre 'est' y 'mg'.
-  geom_smooth(method = lm) +
-  # 'labs()' permite personalizar las etiquetas del gráfico, como el título. Aquí se establece el título del gráfico.
-  labs(title = "Gráfico de dispersión con ajuste de regresión")
-
-```
-
-Este gráfico mejora los anteriores al colorear los puntos según el tipo de queso y añadir una línea de ajuste, lo que nos permite ver cómo la relación entre 'est' y 'mg' varía entre los diferentes tipos. (Paradoja de Simpson)
-
-```{r}
-# Gráfico de dispersión
-# Crea un gráfico de dispersión para las variables 'est' y 'ph'
-lab |> 
-  # 'ggplot()' inicia una gráfica utilizando el paquete ggplot2. 'aes()' define las estéticas del gráfico, asignando 'est' al eje x y 'mg' al eje y.  Además, la estética 'col' se usa para colorear los puntos según el valor de la variable 'tipo'.
-  ggplot(aes(x = est, y = mg, col = tipo)) +
-  # 'geom_point()' añade capas de puntos al gráfico, lo que crea un gráfico de dispersión con puntos representando las combinaciones de 'est' y 'mg'.
-    geom_point() +
-  # 'geom_smooth()' añade una línea de tendencia o ajuste al gráfico. Realiza un ajuste de regresión lineal que muestra la tendencia general entre 'est' y 'mg', para cada valor de la varaible tipo.
-  geom_smooth(method = lm) +
-  # 'labs()' permite personalizar las etiquetas del gráfico, como el título. Aquí se establece el título del gráfico.
-  labs(title = "Gráfico de dispersión con ajuste de regresión")
-```
-
-### Box-plot
-
-Los box-plots nos ofrecen una forma clara de ver la distribución de una variable continua entre diferentes categorías.
-
-Este box-plot muestra la distribución del pH para diferentes tipos de queso, lo que nos ayuda a entender la variabilidad del pH en cada tipo.
-
-```{r}
-# Gráficos de cajas por grupos
-lab |> 
-  ggplot(aes(x = tipo, y = ph)) +  # Define las variables para el eje x ('tipo') y el eje y ('ph')
-  geom_boxplot() +  # Crea un gráfico de cajas
-  theme_bw() +  # Utiliza un tema en blanco y negro para el gráfico
-  labs(title = "pH por tipo de queso")  # Añade un título al gráfico
-```
-
-Este código genera box-plots del pH para cada analista, añadiendo puntos individuales coloreados por tipo de queso, proporcionando una visión detallada de la variabilidad del pH según el analista y el tipo.
-
-```{r}
-# Gráficos de cajas por grupos eje y color 
-lab |> 
-  ggplot(aes(x = analista, y = ph)) +  # Establece 'analista' en el eje x y 'ph' en el eje y
-  geom_boxplot() +  # Genera el gráfico de cajas
-  geom_jitter(aes(col = tipo), alpha = 0.2) +  # Añade puntos individuales para mostrar la distribución, con color por 'tipo'
-  theme_bw() +  # Aplica un tema en blanco y negro
-  labs(title = "pH por analista")  # Asigna un título al gráfico
-```
-
-### Gráfico resumen
-
-Este código crea una serie completa de gráficos bivariantes que muestran cómo cada par de variables seleccionadas ('ph', 'est', 'mg', 'sal') se relacionan entre sí, con una distinción de colores basada en la variable categórica 'tipo'. Es una manera eficiente de obtener una visión general de las relaciones entre múltiples variables en un conjunto de datos y es especialmente útil para identificar patrones, correlaciones y posibles anomalías.
-
-```{r}
-# 'ggpairs()' es una función del paquete GGally que crea pares de gráficos para cada combinación de variables.
-ggpairs(
-    # 'lab |> select(ph, est, mg, sal, tipo)' selecciona las columnas específicas 'ph', 'est', 'mg', 'sal' y 'tipo' del dataframe 'lab'.
-    lab |> select(ph, est, mg, sal, tipo),
-    # 'aes(col = tipo)' define las estéticas para el gráfico, en este caso, asignando diferentes colores a cada valor de 'tipo'.
-    aes(col = tipo)
-)
-```
-
-### Análisis numérico
-
-Aquí, nos centramos en el análisis numérico para obtener estadísticas descriptivas de nuestro conjunto de datos.
-
-#### Vector de medias
-
-Calculamos la media de todas las variables numéricas en el conjunto de datos para obtener una visión general de las tendencias centrales.
-
-```{r}
-lab |>  select(where(is.numeric), -codigo) |>   # Selecciona todas las columnas numéricas menos el código
-  drop_na() |>  # Elimina las filas con valores NA
-  summarise(across(everything(), mean))  # Calcula la media para las columnas seleccionadas
-```
-
-#### Resumen numérico 
-
-Este código proporciona un resumen estadístico detallado de la variable 'mg', desglosado por cada tipo de queso, lo que nos permite comparar las características de 'mg' entre los diferentes tipos.
-
-```{r}
-# Resumen numérico de una variable continua para cada categoría de otra discreta
-# 'with(lab, stby(mg, tipo, descr))' aplica una función a un subconjunto de datos dentro del dataframe 'lab'.
-with(
-  # 'lab' es el dataframe que contiene los datos.
-  lab, 
-  # 'stby()' es una función que aplica otra función ('descr' en este caso) a subconjuntos de datos.
-  # Aquí se aplica 'descr' a la variable 'mg', agrupada por los valores de 'tipo'.
-  stby(
-    # 'mg' es la variable a la que se le aplicará la función 'descr'.
-    mg, 
-    # 'tipo' es la variable de agrupación. 'descr' se aplicará por separado a los grupos definidos por 'tipo'.
-    tipo, 
-    # 'descr' es la función que se aplica. Calcula estadísticas descriptivas para 'mg' dentro de cada grupo de 'tipo'.
-    descr
-  )
-)
-```
-
-### Regresión
-
-Finalmente, utilizamos modelos de regresión lineal para explorar las relaciones entre variables continuas.
-
-Este fragmento de código muestra un gráfico de dispersión de 'est' en función de 'mg' con una línea de regresión, resaltando la relación lineal entre estas variables.
-
-```{r}
-# Recta de refresión de la variable 'est' en función de 'mg'
-lab |> 
-  slice(1:15) |>  # Selecciona los primeros 15 registros
-  select(mg, est) |>  # Selecciona las columnas 'mg' y 'est'
-  ggplot(aes(x=mg, y = est)) +  # Define las variables para el gráfico
-  geom_point() +  # Añade puntos al gráfico
-  theme_bw() +  # Aplica un tema en blanco y negro
-  geom_smooth(method = lm, se = FALSE)  # Añade una línea de regresión lineal sin intervalo de confianza
-```
-
-Este código crea un modelo lineal para predecir 'est' a partir de 'mg' y proporciona un resumen detallado del modelo, incluyendo estadísticas como el R-cuadrado y los coeficientes.
-
-```{r}
-# Creación y resumen de un modelo lineal para 'est' en función de 'mg'
-mod <- lab |> 
-  slice(1:15) |>  # Selecciona los primeros 15 registros
-  select(mg, est) |>  # Selecciona las variables 'mg' y 'est'
-  with(lm(est ~ mg))  # Crea un modelo lineal de 'est' en función de 'mg'
-
-# Muestra un resumen del modelo lineal
-# Esto incluye estadísticas como el R-cuadrado, los coeficientes del modelo, sus errores estándar, valores t y p-valores.
-# Es útil para evaluar la calidad del ajuste y la significancia de las variables.
-summary(mod)
-```
-
-Aquí, filtramos el conjunto de datos para incluir solo el tipo 'C' de queso y luego ajustamos un modelo lineal, lo que nos permite ver cómo la relación entre 'est' y 'mg' difiere para este tipo específico.
-
-```{r}
-# Recta de refresión de la variable 'est' en función de 'mg' filtrando por tipo 'C'
-lab |> 
-  # 'filter(tipo == "C")' filtra el dataframe para incluir solo las filas donde la columna 'tipo' es igual a "C".
-  filter(tipo == "C") |> 
-  # 'ggplot(aes(x = mg, y = est))' inicia la creación de un gráfico ggplot2, definiendo 'mg' como la variable del eje x y 'est' como la del eje y.
-  ggplot(aes(x = mg, y = est)) +
-  # 'geom_point()' añade una capa de puntos al gráfico, mostrando la relación entre 'mg' y 'est' para las observaciones donde 'tipo' es "C".
-  geom_point() +
-  # 'geom_smooth(method = "lm")' añade una línea de ajuste lineal al gráfico. 'method = "lm"' indica que se usa un modelo lineal para el ajuste.
-  geom_smooth(method = "lm")
-
-```
-
-En esta parte del análisis, nos enfocamos en construir un modelo de regresión lineal para un subconjunto específico de nuestro conjunto de datos, permitiéndonos explorar la relación entre 'est' y 'mg' para un tipo particular de queso, proporcionando un resumen detallado del modelo.
-
-```{r}
-# 'modelo <- lm(est ~ mg, data = lab, subset = tipo == "C")' crea un modelo lineal.
-modelo <- lm(
-    # 'est ~ mg' define la fórmula del modelo, donde 'est' es la variable dependiente y 'mg' la variable independiente.
-    est ~ mg, 
-    # 'data = lab' especifica que los datos para el modelo provienen del dataframe 'lab'.
-    data = lab, 
-    # 'subset = tipo == "C"' restringe el análisis a las filas del dataframe donde 'tipo' es igual a "C".
-    subset = tipo == "C"
-)
-# 'summary(modelo)' proporciona un resumen del modelo lineal ajustado.
-# Esto incluye estadísticas como el R-cuadrado, los coeficientes del modelo, sus errores estándar, valores t y p-valores.
-# Es útil para evaluar la calidad del ajuste y la significancia de las variables.
-summary(modelo)
-```
-
 # Conclusiones 
 
-El Análisis Exploratorio de Datos (EDA) en este laboratorio ha servido como marco de trabajo integral para aplicar y demostrar conceptos estadísticos esenciales. A través de este enfoque, hemos explorado y analizado los datos desde múltiples perspectivas, utilizando una variedad de técnicas y métodos estadísticos.
+Para las conclusiones de nuestro estudio, responderemos a las preguntas propuestas al principio del estudio.
 
-## Aplicación del EDA y sus Componentes
+`- ¿Los indies recaudan más dinero que los AA o AAA?`
 
-1. **Tablas de Frecuencias y Contingencia**: Dentro del marco del EDA, las tablas de frecuencias y de contingencia han proporcionado una visión inicial y fundamental de la distribución y las relaciones entre las variables categóricas en nuestros datos.
+Aquí podemos concluir que no, de hecho, aunque sean la mayoría de videojuegos, los que más recaudan con diferencia son los AAA y los AA, a pesar de algunos casos aislados dentro de la categoría Indie.
 
-2. **Diversidad de Técnicas de Visualización**: Hemos empleado gráficos como histogramas, gráficos de barras, de dispersión y box plots para visualizar y comprender mejor las características de los datos. Cada tipo de gráfico ha aportado insights únicos, revelando distribuciones, relaciones y patrones clave.
+`- ¿Los juegos que venden más copias recaudan más dinero?`
 
-3. **Medidas de Tendencia Central y Dispersión**: Como parte del EDA, la evaluación de la media, mediana, rango y desviación estándar ha sido crucial para resumir y describir las características centrales y la variabilidad de los datos.
+Podríamos afirmar que sí, ya que en la regresión lineal, se puede observar como es positiva, además se pueden observar otros factores como la correlación que tienen estas dos variables que es significativa.
 
-4. **Identificación de Correlaciones y Modelado de Regresión**: El análisis de correlaciones y la aplicación de modelos de regresión lineal han sido fundamentales para entender la interacción entre variables, proporcionando una base para inferencias más profundas y predicciones.
+`- ¿Los juegos más caros recaudan más dinero que los baratos?`
 
-5. **Enfoque Integral del EDA**: La implementación del EDA ha permitido un análisis sistemático y profundo del conjunto de datos, abarcando desde la identificación inicial de patrones y valores atípicos hasta la evaluación de relaciones complejas y tendencias.
+En cuanto a estas dos variables, a pesar de que la regresión lineal es positiva, no es demasiado notable, además, la correlación de ambas variables es débil. Por lo que podemos concluir que no afecta apenas el que un juego sea más caro que otro. De hecho, esta relación se puede además relacionar con el análisis del tipo de empresa, ya que los juegos que más recaudan (los AAA), suelen tener un precio bastante elevado.
+
+`- ¿Los juegos más largos recaudan más dinero que los que son más cortos?`
+
+En esta relación, podemos afirmar que no tienen apenas relación como hemos podido observar en el análisis de correlaciones. Como conclusión, que un juego sea más largo o más corto, no influye prácticamente en nada a la recaudación del mismo.
+
+`- ¿Los juegos con buenas valoraciones recaudan más que los que tienen peor puntuación?`
+
+Por último, estas dos variables, tenían una correlación muy baja, de hecho, la más baja del estudio. Es decir, podríamos haber concluido desde el principio que no tenían relación ninguna. Aún así podemos ver como en el ajuste de regresión lineal, la recta es prácticamente horizontal. Por ello, podemos concluir que las valoraciones no tienen nada que ver con lo que un juego pueda recaudar. Como dijimos en el análisis detallado de estas dos variables, puede deberse a que estas valoraciones son de los usuarios y no de profesionales como podría ser en "Metacritic".
 
 
-En resumen, este laboratorio ha demostrado cómo los elementos teóricos de la estadística descriptiva pueden ser aplicados eficazmente para el análisis de datos. El EDA Nos permite no solo comprender los datos a un nivel superficial, sino también descubrir las historias y los patrones que yacen en su interior, preparando el terreno para análisis estadísticos más avanzados.
+## LINK AL REPOSITORIO DE GITHUB
+
+1. **Repositorio de GitHub**: https://github.com/danitjela/PracticaEstadistica
