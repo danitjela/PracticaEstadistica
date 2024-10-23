@@ -343,7 +343,11 @@ ggplot(lab, aes(x = revenue)) +
   ylim(0, 200) +  # Establece el rango del eje Y de 0 a 500
   xlim(0, 50000000) +  # Limita el rango del eje X a 50 millones
 
-  theme_minimal()
+  theme_minimal() + 
+
+  scale_x_continuous(limits = c(0, 50000000),
+    breaks = seq(10000000, 50000000, by = 10000000),
+    labels = c("10M", "20M", "30M", "40M", "50M"))
 
 ```
 
