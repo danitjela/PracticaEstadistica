@@ -737,7 +737,8 @@ A continuación, realizaremos dos gráficas de dispersión, la primera estará b
   geom_point() +
   geom_smooth() +
   labs(title = "Gráfico de dispersión con ajuste de regresión automático:") +
-  scale_x_continuous(breaks = c(0, 200000000, 400000000, 600000000, 800000000), labels = c("0", "200M", "400M", "600M", "800M"))
+  scale_x_continuous(breaks = c(0, 200000000, 400000000, 600000000, 800000000), labels = c("0", "200M", "400M", "600M", "800M")) +
+  theme_bw()
 ```
 
 ```{r}
@@ -747,7 +748,8 @@ A continuación, realizaremos dos gráficas de dispersión, la primera estará b
   geom_point() +
   geom_smooth(method = lm, se = FALSE) +
   labs(title = "Gráfico de dispersión con ajuste de regresión lineal:")+
-  scale_x_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000, 5000000), labels = c("0", "1M", "2M", "3M", "4M", "5M"))
+  scale_x_continuous(breaks = c(0, 1000000, 2000000, 3000000, 4000000, 5000000), labels = c("0", "1M", "2M", "3M", "4M", "5M"))+
+  theme_bw()
 ```
 
 Cabe destacar, que en la primera gráfica, la mayoría de datos se concentran en una zona y la dispersión de puntos es tan elevada para los beneficios altos que la interpretación de la recta se vuelve prácticamente imposible, mientras que en la segunda gráfica podemos denotar un aumento positivo y progresivo de los beneficios en cuanto el precio aumenta.
