@@ -40,8 +40,7 @@ En cuanto a las preguntas, hemos planteado las siguientes:
 
 También cabe mencionar que, el estudio de la variable "reviewScore" nos ha llamado la atención al observar que gran cantidad de los juegos tienen una valoración de 0, lo cual puede significar que, a la hora de cargar los datos en la página del dataset, ha podido haber algún error.
 
-Además, vamos a descartar del estudio la variable "steamId", ya que no nos aporta ningún tipo de información relevante para nuestro objetivo.
-
+Además, vamos a descartar el estudio la variable "steamId", ya que no nos aporta ningún tipo de información relevante para nuestro objetivo.
 
 # Importación de datos y carga de paquetes
 
@@ -61,7 +60,7 @@ library(kableExtra)
 
 ```
 
-A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ello, utilizamos el método read.csv(), al cual le introducimos como parámetros: la ruta relativa del archivo, se especifica que el archivo tiene una fila de encabezados para los nombres de las variables y el tipo de separación de los elementos en el archivo (en nuestro caso commas). El resultado de esta operación se almacena en la variable lab con la que trabajaremos durante el análisis.
+A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ello, utilizamos el método read.csv(), al cual le introducimos como parámetros: la ruta relativa del archivo, se especifica que el archivo tiene una fila de encabezados para los nombres de las variables, y el tipo de separación de los elementos en el archivo (en nuestro caso comas). El resultado de esta operación se almacena en la variable lab con la que trabajaremos durante el análisis.
 
 ```{r, results = 'hide'}
 
@@ -70,7 +69,6 @@ A continuación, leeremos y almacenaremos los datos de nuestro estudio. Para ell
   mutate(releaseDate = as.Date(releaseDate))
   
 ```
-
 
 # Diccionario de datos
 
@@ -113,7 +111,7 @@ En esta sección, presentamos un diccionario de datos que detalla cada variable 
     
 # Muestra del dataset
 
-Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando. 
+Ahora, vamos a echar un vistazo a las primeras filas de nuestro dataset para obtener una comprensión inicial de los datos con los que estamos trabajando.
 
 ```{r}
 
@@ -123,7 +121,6 @@ lab |>
 
 ```
 
-
 # Análisis exploratorio de datos
 
 ## Datos univariantes
@@ -132,7 +129,7 @@ Comenzaremos nuestro análisis exploratorio de datos con un enfoque en los datos
 
 ### Estudio de la variable RELEASEDATE
 
-Para el estudio de la variable "releaseDate" crearemos un histograma, donde se agruparán las fechas de salida de cada videojuego en meses (desde enero hasta septiembre de este mismo año), y determinaremos cuál han sido los con más y menos lanzamientos.
+Para el estudio de la variable "releaseDate" crearemos un histograma, donde se agruparán las fechas de salida de cada videojuego en meses (desde enero hasta septiembre de este mismo año), y determinaremos cuál han sido los que tienen más y menos lanzamientos.
 
 ```{r}
 lab <- lab |> 
@@ -155,13 +152,11 @@ lanzamientos_mes <- lab |>
          y = "Nº Lanzamientos")
 ```
 
-
-Según el gráfico podemos decir que los meses con más lanzamientos han sido: 1º -> Mayo, 2º -> Abril, 3º -> Marzo. Mientras tanto los meses con menos lanzamientos han sido: 1º -> Septiembre (ya que los datos van desde principios de este año hasta el 9 de septiembre), 2º -> Enero, 3º -> Agosto.
-
+Según el gráfico podemos decir que los meses con más lanzamientos han sido: 1º -\> Mayo, 2º -\> Abril, 3º -\> Marzo. Mientras tanto, los meses con menos lanzamientos han sido: 1º -\> Septiembre (ya que los datos van desde principios de este año hasta el 9 de septiembre), 2º -\> Enero, 3º -\> Agosto.
 
 ### Estudio de la variable COPIESSOLD
 
-Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers. 
+Primero, generamos una tabla de frecuencias y un histograma agrupando la variable 'copiesSold' por intervalos, esto nos ayuda a entender cuántas copias han sido vendidas de cada juego en toda nuestra muestra, si hay concentraciones de valores o si hay posibles outliers.
 
 ```{r}
 
@@ -193,9 +188,10 @@ Primero, generamos una tabla de frecuencias y un histograma agrupando la variabl
   tab_style(style = list(cell_text(weight = "bold")),  locations = cells_body(rows = c(1, 2))) 
   
 ```
-Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en los primeros intervalos hasta los 5M de ventas, por lo que podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos.
 
-```{r} 
+Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muestras se concentran en los primeros intervalos hasta los 5M de ventas, por lo que, podemos asumir una desviación de las muestras hacia la izquierda y un sesgamiento general de los datos.
+
+```{r}
   ggplot(data.frame(x = lab$copiesSold), aes(x = x)) +
   geom_histogram(binwidth = 200000, fill = "steelblue", color = "white", 
                  aes(y = ..count..)) +
@@ -212,7 +208,6 @@ Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muest
                      labels = seq(0, 130, by = 20))
 
 ```
-
 
 ```{r}
 
@@ -234,20 +229,19 @@ Analizando las frecuencias podemos ver cómo casi la mitad del peso de las muest
                      labels = seq(0, 0.025, by = 0.01))
 ```
 
-
-Con el fin de facilitar el análisis del gráfico, a continuación se muestra un resumen numérico de la variable `copiesSold`:
+Con el fin de facilitar el análisis del gráfico, a continuación, se muestra un resumen numérico de la variable `copiesSold`:
 
 ```{r}
   lab|> select(copiesSold) |> descr() |> kable(digits = 2)
 ```
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos de las ventas están sesgados, concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50) y al coeficiente de asimetría positivo (Skewness	= 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis =	419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis =	3.00) y con colas extremadamente largas, por lo que tiene sentido que la representación de la distribución normal de los datos se comporte como una línea recta y no se asemeje para nada a una campana.
+Según todos los datos y gráficos recabados en el análisis de esta variable, confirmamos que los datos de las ventas están sesgados, concretamente dicha distribución de ventas se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 141482.57 // Median = 11928.50), y al coeficiente de asimetría positivo (Skewness = 18.58). Además, comparado con una distribución normal, podemos asegurar a través de su curtosis (Kurtosis = 419.44) que nuestra muestra es extremadamente más alta (idealmente Kurtosis = 3.00) y con colas extremadamente largas, por lo que tiene sentido que la representación de la distribución normal de los datos se comporte como una línea recta y no se asemeje para nada a una campana.
 
 Tal y como estaba previsto, se trata de una distribución con pocos valores significativos y muchos outliers que alteran la medición de los datos y no aportan prácticamente ningún valor al análisis; aun así, resulta interesante saber que aproximadamente la mitad del peso de las ventas de la muestra se concentran entre las primeras 10 mil ventas y que el mínimo de ventas ha sido 593 y el máximo ha sido 30739148, lo cual énfatiza el amplio rango de datos de esta variable.
 
 ### Estudio de la variable PRICE
 
-Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, proporcionando una visión clara de cuánto cuesta una copia de cada juego para así, descartar posibles outliers y hacer un análisis más preciso.
+Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, proporcionando una visión clara de cuánto cuesta una copia de cada juego, para así, descartar posibles outliers y hacer un análisis más preciso.
 
 ```{r}
 
@@ -275,16 +269,15 @@ Para el estudio de 'price', crearemos una tabla de frecuencias y un histograma, 
   
 ```
 
-Como se puede apreciar, predominan los precios entre los 0 y 30 dólares, siendo mucho más frecuentes entre los mismos los precios entre los 10 y los 20 dólares, representando aproximadamente algo más de un tercio del peso de la muestra (42%). Asimismo, el siguiente intervalo más frecuente es el de los 0 a 10 dólares, con un peso del 33% de la muestra. 
+Como se puede apreciar, predominan los precios entre los 0 y 30 dólares, siendo mucho más frecuentes entre los mismos los precios entre los 10 y los 20 dólares, representando aproximadamente algo más de un tercio del peso de la muestra (42%). Asimismo, el siguiente intervalo más frecuente es el de los 0 a 10 dólares, con un peso del 33% de la muestra.
 
-Cabe destacar como posible outlier el único precio con una frecuencia de 1 que se corresponde con el valor de 99,99$, por lo que se excluirá este valor a la hora de representar los valores en el histograma.
+Cabe destacar como posible outlier el único precio con una frecuencia de 1 que se corresponde con el valor de 99,99\$, por lo que se excluirá este valor a la hora de representar los valores en el histograma.
 
 ```{r}
   lab_filtrado <- lab[lab$price != 99.99,]
   price_filtrado <- lab_filtrado$price
 
 ```
-
 
 ```{r}
 
@@ -321,10 +314,9 @@ Con el fin de facilitar el análisis del gráfico y de poder comprobar cómo ha 
 
 ```
 
-Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que efectivamente los precios están muy dispersos alrededor de la media (Mean = 17.46 // Std. Dev = 12.47), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.46 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness = 1.46).
+Según todos los datos y gráficos recabados en el análisis de esta variable, podemos concluir con que, efectivamente, los precios están muy dispersos alrededor de la media (Mean = 17.46 // Std. Dev = 12.47), concretamente dicha distribución de precios se encuentra sesgada hacia la derecha (cola derecha), esto se debe a que la media es más alta que la mediana (Mean = 17.46 // Median = 14.99) y al coeficiente de asimetría positivo (Skewness = 1.46).
 
 En definitiva, podemos obtener varias conclusiones de este estudio: hay una clara tendencia hacia los precios menores en nuestra muestra y además, hemos encontrado valores que distorsionan los datos.
-
 
 ### Estudio de la variable REVENUE
 
@@ -351,16 +343,11 @@ ggplot(lab, aes(x = revenue)) +
 
 ```
 
-
 En este histograma vemos la alta concentración de videojuegos con bajos beneficios, son menos frecuentes los juegos que alcanzan beneficios entre los 10 y los 50 millones. La gráfica muestra una clara asimetría con la cantidad que ganan poco y los pocos que obtienen grandes ingresos.
-
 
 ### Estudio de la variable AVGPLAYTIME
 
-A continuación, nos enfocamos en el tiempo que dedican las personas a cada uno de los juegos.
-Una herramienta crucial para entender la distribución de nuestra variable cuantitativa es el histograma, ya que este gráfico nos permitirá observar la forma y la dispersión de los datos.
-
-Vamos a utilizar el color 'steelblue' para las barras, lo que nos permite observar la distribución de la variable de manera sencilla.
+A continuación, nos enfocamos en el estudio del tiempo que dedican las personas a cada uno de los juegos. Una herramienta crucial para entender la distribución de nuestra variable cuantitativa es el histograma, ya que, este gráfico nos permitirá observar de manera sencilla la forma y la dispersión de los datos.
 
 ```{r}
 
@@ -375,15 +362,13 @@ lab |> ggplot(aes(avgPlaytime)) +
   ) +
 
   theme_bw() +
-    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por   intervalos")
+    labs(x = "Tiempo promedio de juego (horas)", y = "Frecuencia", title = "Distribución de tiempo de juego por intervalos")
 
 ```
 
-
 Si analizamos el histograma se puede observar que la mayoría de los jugadores dedican menos de 10 horas a los videojuegos. Hay una caída significativa en la frecuencia de jugadores que juegan más de 10 horas, lo que sugiere que pocos jugadores le dedican tanto tiempo al juego. Esto puede indicar que muchos juegos no requieren un compromiso prolongado, o que los jugadores tienden a jugar varios titulos en sesiones cortas de tiempo.
 
-
-A continuación, se crea una tabla de con los juegos que tienen más horas promedio jugadas.
+También hay que destacar que hemos impuesto un límite de 100 en las horas de juego, porque solo unos pocos videojuegos superaban esta cifra, y en el histograma no se observaba de forma correcta. Para ello, hemos creado una tabla a continuación.
 
 ```{r}
 
@@ -400,6 +385,8 @@ top_ten_games |>
 
 ```
 
+En esta tabla observamos los 10 juegos a los que las personas les han dedicado más horas, para de esta manera, completar el estudio de esta variable.
+
 ### Estudio de la variable REVIEWSCORE
 
 ```{r}
@@ -409,8 +396,7 @@ cat("La cantidad de respuestas obtenidas es:", num_respuestas_SCORE)
 
 ```
 
-
-Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, con el siguiente código esudiaremos las frecuencias relativas y absolutas por rangos debido a la cantida de valores que hay.
+Esta variable la estudiaremos para poder ver más adelante si se puede relacionar con la recaudación de los juegos. A continuación, estudiaremos las frecuencias relativas y absolutas por rangos, esto se debe a la cantida de valores que hay.
 
 ```{r}
 
@@ -432,8 +418,9 @@ print(tabla_frecuencias_ordenada4)
 
 ```
 
+Como se puede observar, hay bastantes valores de 0 que, como hemos comentado anteriormente, debe tratarse de un error. Por ello, lo hemos sacado fuera de los rangos.
 
-Como se puede observar hay bastantes valores de 0 que como hemos comentado debe tratarse de un error. Por ello, lo hemos sacado fuera de los rangos y para continuar con el estudio, eliminaremos ese valor para poder realizarlo de una manera más fiel a la realidad. Para esto, utilizaremos el siguiente código.
+Para continuar con el estudio, eliminaremos ese valor para poder hacerlo de una manera más fiel a la realidad. Para esto, utilizaremos el siguiente código.
 
 ```{r}
 
@@ -441,8 +428,7 @@ labNo0 <- subset(lab, reviewScore != 0)
 
 ```
 
-
-A continuación, realizaremos un histograma mediante el siguiente código.
+A continuación, realizaremos un histograma.
 
 ```{r}
 
@@ -459,8 +445,7 @@ ggplot(data.frame(x = datos), aes(x = x)) +
 
 ```
 
-
-Además de este histograma, debemos realizar un resumen númerico a partir del cual podremos comprender los gráficos con facilidad.
+Además de este histograma, hemos realizado un resumen númerico a partir del cual, podremos comprender los gráficos con facilidad.
 
 ```{r}
 
@@ -468,12 +453,11 @@ labNo0 |> select(reviewScore) |> descr() |> kable(digits = 2)
 
 ```
 
-
-Podemos observar como las puntuaciones por lo general, son extremadamente altas. Esto se puede deber a que el dataset es sobre los 1500 mejores juegos según su recaudación, por lo que podemos entender que son buenos juegos. Además, estas valoraciones son puestas por los usuarios y no por críticos profesionales.
+Observamos como las puntuaciones, por lo general, son extremadamente altas. Esto se puede deber a que el dataset es sobre los 1500 mejores juegos según su recaudación, por lo que podemos entender que son buenos juegos. Además, hay que tener en cuenta que estas valoraciones son puestas por los usuarios y no por críticos profesionales.
 
 ### Estudio de la variable PUBLISHERCLASS
 
-Ahora analizaremos la variable "publisherclass". En esta variable, veremos las diferencias entre los tipos de empresas que hay y como se distribuyen. A continuación, con el siguiente código estudiaremos las frecuencias relativas y absolutas.
+Ahora, analizaremos la variable "publisherclass". En esta variable, veremos las diferencias entre los tipos de empresas que hay y como se distribuyen. A continuación, gracias al siguiente código, estudiaremos las frecuencias relativas y absolutas.
 
 ```{r}
 
@@ -485,8 +469,7 @@ print(tabla_frecuencias_publisherclass)
 
 ```
 
-
-Para observar estos datos con mayor claridad, utilizaremos una gráfica en función de la frecuencia relativa con el siguiente código.
+Para observar estos datos con mayor claridad, utilizaremos una gráfica en función de la frecuencia relativa.
 
 ```{r}
 
@@ -494,13 +477,11 @@ lab  |> group_by(publisherClass) |>  summarise(Frequency = n()) |> mutate(Freque
 
 ```
 
-
-Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se puede observar un caso asilado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.  
-
+Como podemos observar, la mayor parte de los valores obtenidos, son del tipo "Indie", que es como se denota la empresa pequeña, ocupando el 87% de los casos. Además, se ve un caso aislado, "Hobbyist", que es como se denota a un particular que hace el juego por afición.
 
 ### Estudio de la variable PUBLISHERS
 
-A continuación analizamos la variable "publishers" mediante un gráfico de barras que muestra la frecuencia de los 10 publishers más representativos según la cantidad de juegos publicados en Steam. Primero contamos los videojuegos por publisher y seleccionamos los 10 más comunes y luego creamos en gráfico de barras con esos datos.
+A continuación, analizamos la variable "publishers" mediante un gráfico de barras que muestra la frecuencia de los 10 publishers más representativos según la cantidad de juegos publicados en Steam. Primero, contamos los videojuegos por publisher y seleccionamos los 10 más comunes, y luego, creamos en gráfico de barras con esos datos.
 
 ```{r}
 
@@ -524,14 +505,11 @@ ggplot(top_publishers, aes(x = reorder(publishers, n), y = n)) +
 
 ```
 
-
 En esta gráfica podemos ver los 10 publishers que tienen una influencia notable en Steam debido al volumen de títulos publicados.
 
 ### Estudio de la variable DEVELOPERS
 
-
-Ahora vamos a analizar la variable "developers". 
-Realmente para nuestro estudio no es de gran importancia, aun así, crearemos una tabla de frecuencia para saber cuales son los 10 desarrolladores más frecuentes, ya que, puede ser curioso saberlo. 
+Ahora, vamos a analizar la variable "developers". Realmente para nuestro estudio no es de gran importancia, aun así, crearemos una tabla de frecuencia para saber cuáles son los 10 desarrolladores más frecuentes, ya que, puede ser curioso saberlo.
 
 ```{r}
 
@@ -558,11 +536,11 @@ table(lab$developers) |>
 
 ```
 
-En la tabla podemos observar claramente los 10 desarrolladores más frecuentes entre los 1407 desarrolladores únicos.
-Como ya hemos mencionado, esta variable no será de gran importancia a la hora de responder a nuestras preguntas y de cumplir nuestro objetivo final de la práctica.
-
+En la tabla podemos observar claramente los 10 desarrolladores más frecuentes entre los 1407 desarrolladores únicos. Como ya hemos mencionado, esta variable no será de gran importancia a la hora de responder a nuestras preguntas y de cumplir el objetivo final de la práctica.
 
 ## Datos bivariantes
+
+En este apartado, analizaremos las relaciones entre las variables para poder responder a las preguntas planteadas en la introducción y cumplir con el objetivo principal de nuestro estudio.
 
 ### Gráfico de correlación numérica
 
@@ -579,7 +557,7 @@ Aunque la única relación notable que puede haber es la recaudación con el nú
 
 ### Estudio de las variables COPIESSOLD Y REVENUE
 
-Antes de comenzar con el analisis bivariante de "copiesSold" y "revenue" vamos a hacer un resumen de ambas variables para saber la cantidad de copias vendidas y la recaudación promedio, los valores mínimos y máximos, o los valores faltantes en caso de que los haya. Esto se hace con el objetivo de conocer mejor sus valores y distribución.
+Antes de comenzar con el analisis bivariante de "copiesSold" y "revenue" vamos a hacer un resumen de ambas variables, para saber la cantidad de copias vendidas y la recaudación promedio, los valores mínimos y máximos, o los valores faltantes en caso de que los haya. Esto se hace con el objetivo de conocer mejor sus valores y distribución.
 
 ```{r}
 
@@ -591,6 +569,7 @@ summary(lab$revenue)
 ```
 
 A continuación, vamos a realizar un gráfico de dispersión para así saber si hay una relación visual en ambas variables.
+
 ```{r}
 ggplot(lab, aes(x = copiesSold, y = revenue)) +
   geom_jitter(color = "blue", size = 1, width = 0.2, height = 0, alpha = 0.7) +
@@ -614,7 +593,6 @@ ggplot(lab, aes(x = copiesSold, y = revenue)) +
   theme_minimal()
 ```
 
-
 Tras esto, calcularemos la correlación entre "copiesSold" y "revenue" para determinar si su relación es fuerte o débil, y representaremos el resultado en forma de tabla.
 
 ```{r}
@@ -628,8 +606,7 @@ correlacion_df %>%
   kable_styling(full_width = F)
 ```
 
-
-El resultado de la correlación es de 0.63, lo que indica una relación positiva significativa, aunque no muy fuerte. 
+El resultado de la correlación es de 0.63, lo que indica una relación positiva significativa, aunque no muy fuerte.
 
 Por último, se realizará un modelo de regresión lineal para analizar cómo varía la recaudación en función de las copias vendidas. Para ello, se han eliminado varios puntos atípicos con valores muy altos tanto en las Copias Vendidas como en la Recaudación.
 
@@ -668,8 +645,7 @@ ggplot(lab_filt, aes(x = copiesSold, y = revenue)) +
   theme_minimal()
 ```
 
-
-Como se puede observar, las variables copiesSold y revenue muestran una relación más fuerte cuando el número de copias vendidas es inferior a 2,5 millones. Esto sugiere que, aunque la recaudación depende en gran medida de las copias vendidas,pero no de forma exclusiva, ya que, dicha relación tiende a debilitarse a medida que el número de copias vendidas aumenta.
+Como se puede observar, las variables copiesSold y revenue muestran una relación más fuerte cuando el número de copias vendidas es inferior a 2,5 millones. Esto sugiere que, aunque la recaudación depende en gran medida de las copias vendidas, no depende de forma exclusiva de ello, ya que, dicha relación tiende a debilitarse a medida que el número de copias vendidas aumenta.
 
 ### Estudio de las variables PRICE Y REVENUE
 
@@ -698,7 +674,8 @@ En primer lugar, con el objetivo de comprender cómo varían los beneficios en c
                                      htmltools::tags$h4(htmltools::tags$strong("y: beneficios(dólares) // x: precio(dólares)")))) |>
   kable_styling(latex_options = c("striped", "hold_position"))
 ```
-Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el resto de intervalos no tienen un peso significativo a considerar en este análisis, por lo que vamos a realizar un filtrado de la variable hasta los 5M $ de beneficio para quedarnos únicamente con el primer intervalo, eliminando un total de 69 muestras del dataset.
+
+Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el resto de intervalos no tienen un peso significativo a considerar en este análisis, por lo que vamos a realizar un filtrado de la variable hasta los 5M \$ de beneficio para quedarnos únicamente con el primer intervalo, eliminando un total de 69 muestras del dataset.
 
 ```{r}
   lab_filtrado2 <- lab_filtrado[lab_filtrado$revenue <= 5000000,]
@@ -728,12 +705,11 @@ Como podemos apreciar, nuestros datos se acumulan en el primer intervalo y en el
   
 ```
 
-Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0$ y 20$).
+Ante los datos de esta tabla, podemos obtener una primera conclusión, no existe una fuerte relación (aparentemente) entre los beneficios obtenidos y el precio impuesto para el juego. Sin embargo podemos apreciar una concentración de frecuencias entre los primeros intervalos de ambas variables, lo que indica que a priori, puede haber una correlación (ciertamente no muy elevada) entre la obtención de menores beneficios e imponer un precio bajo (entre 0\$ y 20\$).
 
-Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0$) implica obtener beneficios menores.
+Curiosamente, ni imponer un precio más elevado asegura mayores beneficios, ni imponer un precio más bajo (incluso 0\$) implica obtener beneficios menores.
 
-
-A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) con el dataset total y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal con el dataset filtrado a 5M $ de beneficios.
+A continuación, realizaremos dos gráficas de dispersión, la primera estará basada en el ajuste de regresión más adecuado posible (mediante la función geom_smooth) con el dataset total y la segunda, continuando así el estudio de correlación, consistirá en un ajuste de regresión lineal con el dataset filtrado a 5M \$ de beneficios.
 
 ```{r}
   lab_filtrado |>
@@ -757,7 +733,7 @@ A continuación, realizaremos dos gráficas de dispersión, la primera estará b
   theme_bw()
 ```
 
-Cabe destacar, que en la primera gráfica, la mayoría de datos se concentran en una zona y la dispersión de puntos es tan elevada para los beneficios altos que la interpretación de la recta se vuelve prácticamente imposible, mientras que en la segunda gráfica podemos denotar un aumento positivo y progresivo de los beneficios en cuanto el precio aumenta.
+Cabe destacar, que en la primera gráfica, la mayoría de datos se concentran en una zona y la dispersión de puntos es tan elevada para los beneficios altos que la interpretación de la recta se vuelve prácticamente imposible, mientras que en la segunda gráfica, podemos denotar un aumento positivo y progresivo de los beneficios en cuanto el precio aumenta.
 
 Para mayor comprensión de ambos gráficos, mostramos el siguiente resumen numérico:
 
@@ -769,12 +745,13 @@ Aproximadamente, a través de los valores del resumen (Estimate Std. (revenue) =
 
 `revenue = 16368 × price + 131002`
 
-Lo que nos indica una función lineal creciente, donde los beneficios aumentan a medida que los precios aumentan. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0$ (valor totalmente válido en este estudio) que sería de 131002$.
+Lo que nos indica una función lineal creciente, donde los beneficios aumentan a medida que los precios aumentan. Además dicha función nos indica el valor esperado de beneficios cuando el precio es 0\$ (valor totalmente válido en este estudio) que sería de 131002\$.
 
 ```{r}
   cor(lab_filtrado2$price, lab_filtrado2$revenue)
 ```
-En cuanto a la correlación de una variable con otra y predictibilidad del modelo creado, el valor del coeficiente de correlación lineal (0.25) nos sugiere una relación lineal positiva débil entre price y revenue y el valor R-squared (0.0619) indica que el 6.19% de la variabilidad de los beneficios es explicada por el precio, lo cual es un porcentaje extremadamente bajo. 
+
+En cuanto a la correlación de una variable con otra y predictibilidad del modelo creado, el valor del coeficiente de correlación lineal (0.25) nos sugiere una relación lineal positiva débil entre price y revenue y el valor R-squared (0.0619) indica que el 6.19% de la variabilidad de los beneficios es explicada por el precio, lo cual es un porcentaje extremadamente bajo.
 
 Esto sugiere que, el precio no afecta directamente a los beneficios y, que hay otros factores que también influyen en los beneficios que deberemos tener en cuenta en nuestro modelo. Además, se trata de un modelo poco preciso, ya que el valor del Residual standard error (721900) nos indica que la varianza residual es de 849.65, cuyo valor es muy elevado.
 
@@ -784,8 +761,8 @@ A continuación se muestra la matriz de varianzas y covarianzas del modelo:
   summary(lab_filtrado2 |> select(revenue, price) |> with(lm(revenue ~ price))) |>
   vcov()
 ```
-Dicha matriz nos indica una varianza muy elevada tanto como para revenue (1149614621) como para price (2843591) y una covarianza de -47250453, lo que reafirma nuestra teoría de que no hay una relación fuerte ni concisa entre ambas variables.
 
+Dicha matriz nos indica una varianza muy elevada tanto como para revenue (1149614621) como para price (2843591) y una covarianza de -47250453, lo que reafirma nuestra teoría de que no hay una relación fuerte ni concisa entre ambas variables.
 
 ### Estudio de las variables AVGPLAYTIME Y REVENUE
 
@@ -805,15 +782,13 @@ correlacion_df %>%
 
 ```
 
-
 La tabla nos indica que la correlación entre ambas variables es de 0.08, es decir, una cifra cercana a 0. Esto nos dice que la relación entre ambas variables es muy débil o inexistente.
 
 Los juegos con menos horas de juego pueden tener precios altos y al contrario, los juegos muy largos pueden atraer a jugadores que invierten más tiempo, pero sin tener que gastar más dinero.
 
-A continuación, vamos a visualizar un gráfico de dispersión para poder ver la relación entre las variables de forma más clara y directa.Los puntos en el gráfico representan diferentes juegos, donde el eje "x" indica el tiempo promedio de juego, y el eje "y" representa la recaudación total obtenida por esos juegos.
+A continuación, vamos a visualizar un gráfico de dispersión para poder ver la relación entre las variables de forma más clara y directa. Los puntos en el gráfico representan diferentes juegos, donde el eje "x" indica el tiempo promedio de juego, y el eje "y" representa la recaudación total obtenida por esos juegos.
 
 Para obtener una mejor comprensión visual, se ha utilizado una escala logarítmica en el eje de recaudación debido a la amplia variación en las cifras de ingresos, que van desde valores muy bajos hasta cientos de millones. Esto nos permite que los datos sean más visibles y comparables.
-
 
 ```{r}
 lab |> 
@@ -844,12 +819,11 @@ El gráfico muestra una concentración de juegos con un tiempo promedio bajo (ce
 
 Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
 
-
-A modo de conclusión podemos decir que el tiempo de juego influye de forma mínima en la recaudación.
-
+A modo de conclusión podemos decir que, el tiempo de juego tiene una influencia mínima o casi inexistente en la recaudación.
 
 ### Estudio de las variables REVIEWSCORE Y REVENUE
-A continuación vamos a analizar  si la puntuación asociada al videojuego afecta realmente a la recaudación. Para ello vamos a utilizar una gráfica de dispersión mediante la cual se verá la cantidad de videojuegos beneficiados por su puntuación.
+
+A continuación, vamos a analizar si la puntuación asociada al videojuego afecta realmente a la recaudación. Para ello, vamos a utilizar una gráfica de dispersión mediante la cual se verá la cantidad de videojuegos beneficiados por su puntuación.
 
 ```{r}
 
@@ -866,7 +840,7 @@ ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
 
 ```
 
-Podemos apreciar cómo la mayoría de puntos se agrupan en la parte baja de la gráfica indicando que pese a  la puntuación alta que puedan tener, son pocos los que tienen recaudaciones altas. Lo que sí queda claro es que de los juegos con poca puntuación, ninguno sobresale. De todas formas comprobemos mediante un análisis de regresión para obtener un modelo cuantitativo.
+Podemos apreciar cómo la mayoría de puntos se agrupan en la parte baja de la gráfica indicando que pese a la puntuación alta que puedan tener, son pocos los que tienen recaudaciones altas. Lo que sí queda claro es que de los juegos con poca puntuación, ninguno sobresale. De todas formas, comprobemos esto mediante un análisis de regresión para obtener un modelo cuantitativo.
 
 ```{r}
 
@@ -889,10 +863,10 @@ ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
 
 ```
 
-Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación  que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
-
+Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
 
 ### Estudio de las variables PUBLISHERCLASS Y REVENUE
+
 En este apartado, queremos comprobar si el tipo de empresa afecta a la recaudación. Para ello, vamos a utilizar una gráfica box-plot y un gráfico de barras para que sea más visual.
 
 ```{r}
@@ -933,10 +907,9 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
 
 ```
 
-Aquí podemos observar como sí hay juegos "Indie" con una recaudación superior a la media del resto de empresas, pero son casos aislados y la mayor parte de los "Indies", generan mucho menos que los juegos "AAA" y "AA". 
+Aquí podemos observar como sí hay juegos "Indie" con una recaudación superior a la media del resto de empresas, pero son casos aislados y la mayor parte de los "Indies", generan mucho menos que los juegos "AAA" y "AA".
 
-
-# Conclusiones 
+# Conclusiones
 
 Para las conclusiones de nuestro estudio, responderemos a las preguntas propuestas al principio del estudio.
 
@@ -960,7 +933,6 @@ En esta relación, podemos afirmar que no tienen apenas relación como hemos pod
 
 Por último, estas dos variables, tenían una correlación muy baja, de hecho, la más baja del estudio. Es decir, podríamos haber concluido desde el principio que no tenían relación ninguna. Aún así podemos ver como en el ajuste de regresión lineal, la recta es prácticamente horizontal. Por ello, podemos concluir que las valoraciones no tienen nada que ver con lo que un juego pueda recaudar. Como dijimos en el análisis detallado de estas dos variables, puede deberse a que estas valoraciones son de los usuarios y no de profesionales como podría ser en "Metacritic".
 
-
 ## LINK AL REPOSITORIO DE GITHUB
 
-1. **Repositorio de GitHub**: https://github.com/danitjela/PracticaEstadistica
+1.  **Repositorio de GitHub**: <https://github.com/danitjela/PracticaEstadistica>
