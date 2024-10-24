@@ -57,6 +57,7 @@ library(knitr)
 library(corrplot)
 library(dplyr)
 library(kableExtra)
+library(scales)
 
 ```
 
