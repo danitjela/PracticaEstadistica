@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
                       error = TRUE)
-``` 
+```
 
 # Introducción y definición de objetivos
 
@@ -788,34 +788,31 @@ Los juegos con menos horas de juego pueden tener precios altos y al contrario, l
 
 A continuación, vamos a visualizar un gráfico de dispersión para poder ver la relación entre las variables de forma más clara y directa. Los puntos en el gráfico representan diferentes juegos, donde el eje "x" indica el tiempo promedio de juego, y el eje "y" representa la recaudación total obtenida por esos juegos.
 
-Para obtener una mejor comprensión visual, se ha utilizado una escala logarítmica en el eje de recaudación debido a la amplia variación en las cifras de ingresos, que van desde valores muy bajos hasta cientos de millones. Esto nos permite que los datos sean más visibles y comparables.
-
 ```{r}
-lab |> 
-  ggplot(aes(x = avgPlaytime, y = revenue)) +
-  
-  geom_point(alpha = 0.7, color = "blue") +
-  
-  scale_y_log10() +
-  
-  xlim(0, 300) +
-
-  labs(
-    x = "Tiempo promedio de juego (horas)",
-    y = "Recaudación (log scale)",
-    title = "Relación entre Tiempo de Juego y Recaudación en Steam"
-  ) +
-
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-    axis.title.x = element_text(face = "bold"),
-    axis.title.y = element_text(face = "bold")
-  )
+ggplot(lab, aes(x = avgPlaytime, y = revenue)) +
+  geom_jitter(color = "blue", size = 1, width = 0.2, height = 0, alpha = 0.7) +
+  scale_y_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  scale_x_continuous(labels = function(x) {
+    ifelse(x >= 1e6, 
+           paste0(format(x / 1e6, big.mark = ",", digits = 2), " M"),
+           ifelse(x >= 1e3, 
+                  paste0(format(x / 1e3, big.mark = ",", digits = 2), " K"), 
+                  format(x)))
+  }) +
+  labs(title = "Relación entre las horas de juego y Recaudación",
+       x = "Horas de juego",
+       y = "Recaudación") +
+  theme_minimal()
 
 ```
 
-El gráfico muestra una concentración de juegos con un tiempo promedio bajo (cercano a 0 horas), y una gran dispersión en los valores de recaudación. Sin embargo, a pesar de que algunos juegos tienen tiempos de juego elevados (cercanos a las 300 horas), estos no necesariamente generan más ingresos que otros con menos tiempo jugado.
+El gráfico muestra una concentración de juegos con un tiempo promedio entre 0 y 100 horas, y otra gran concentración en los valores de recaudación. Sin embargo, a pesar de que algunos juegos tienen tiempos de juego elevados (cercanos a las 300 horas), estos no necesariamente generan más ingresos que otros con menos tiempo jugado. Por no decir que, el juego con mayor recaudación se encuentra entre 0 y 50 horas.
 
 Los puntos se distribuyen en su mayoría en la esquina inferior izquierda (poco tiempo jugado y baja recaudación), pero no hay un patrón claro de que a mayor tiempo jugado haya una mayor recaudación. El hecho de que los puntos estén tan juntos en la parte baja también sugiere que la mayoría de los juegos tienen tiempos de juego relativamente cortos.
 
