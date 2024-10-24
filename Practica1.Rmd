@@ -454,7 +454,8 @@ ggplot(data.frame(x = datos), aes(x = x)) +
                                          sd = sd(datos)), color = "red", size = 1.5) +
   labs(title = "Distribución de las puntuaciones",
        x = "Puntuación",
-       y = "Frecuencia") 
+       y = "Frecuencia") +
+  theme_minimal()
 
 ```
 
@@ -900,7 +901,8 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
   geom_bar(stat = "summary", fun = "mean", fill = "steelblue") +  # Barras que muestran la media
   labs(title = "Recaudación por tipo de empresa",
        x = "Tipo de empresa",
-       y = "Recaudación promedio") 
+       y = "Recaudación promedio") +
+  theme_minimal()
 
 ```
 
