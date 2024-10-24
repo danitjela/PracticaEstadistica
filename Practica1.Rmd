@@ -822,18 +822,17 @@ A modo de conclusión podemos decir que, el tiempo de juego tiene una influencia
 
 A continuación, vamos a analizar si la puntuación asociada al videojuego afecta realmente a la recaudación. Para ello, vamos a utilizar una gráfica de dispersión mediante la cual se verá la cantidad de videojuegos beneficiados por su puntuación.
 
+
 ```{r}
 
 ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
-
   geom_point(alpha = 0.5) +  
-
   labs(title = "Relación entre Puntuación y Recaudación",
-
        x = "Puntuación",
-       y = "Recaudación") +
-
-  theme_minimal()  # Usar un tema minimalista
+       y = "Recaudación (en millones)") +
+  scale_x_continuous(labels = comma) +  
+  scale_y_continuous(labels = label_number(scale = 1e-6, suffix = "M")) + 
+  theme_minimal() 
 
 ```
 
@@ -842,23 +841,19 @@ Podemos apreciar cómo la mayoría de puntos se agrupan en la parte baja de la g
 ```{r}
 
 modelo <- lm(revenue ~ reviewScore, data = labNo0) 
-
-summary(modelo)  
-
+summary(modelo)
 ggplot(data = labNo0, aes(x = reviewScore, y = revenue)) +
-
   geom_point(alpha = 0.5) +  
-
   geom_smooth(method = "lm", color = "blue") +  
-
   labs(title = "Relación entre Puntuación y Recaudación con Línea de Regresión",
-
        x = "Puntuación",
-       y = "Recaudación") +
-
+       y = "Recaudación (en millones)") +
+  scale_x_continuous(labels = comma) +  
+  scale_y_continuous(labels = label_number(scale = 1e-6, suffix = "M")) +  
   theme_minimal()
 
 ```
+
 
 Ahora podemos ver cómo la línea de regresión no cambia, se mantiene prácticamente horizontal. Esto deja claro que la recaudación que se obtiene no tiene mucho que ver con la puntuación que tenga el videojuego, son escasos los que por tener una alta puntuación tienen tambien una alta recaudación.
 
@@ -869,11 +864,13 @@ En este apartado, queremos comprobar si el tipo de empresa afecta a la recaudaci
 ```{r}
 
 ggplot(lab, aes(x = publisherClass, y = revenue)) +
-  geom_bar(stat = "summary", fun = "mean", fill = "steelblue") +  # Barras que muestran la media
+  geom_bar(stat = "summary", fun = "mean", fill = "steelblue") +
   labs(title = "Recaudación por tipo de empresa",
        x = "Tipo de empresa",
-       y = "Recaudación promedio") +
+       y = "Recaudación promedio (en millones)") +
+  scale_y_continuous(labels = label_number(scale = 1e-6, suffix = "M")) +
   theme_minimal()
+
 
 ```
 
@@ -885,8 +882,10 @@ ggplot(lab, aes(x = publisherClass, y = revenue)) +
   geom_boxplot(fill = "lightblue", color = "darkblue") +
   labs(title = "Distribución de la Recaudación por Tipo de Empresa",
        x = "Tipo de Empresa",
-       y = "Recaudación") +
+       y = "Recaudación (en millones)") +
+  scale_y_continuous(labels = label_number(scale = 1e-6, suffix = "M")) +
   theme_minimal()
+
 
 ```
 
@@ -896,11 +895,12 @@ Debido a la disparidad entre las muestras que tenemos, necesitaremos aplicar una
 
 ggplot(lab, aes(x = publisherClass, y = revenue)) +
   geom_boxplot(fill = "lightblue", color = "darkblue") +
-  scale_y_log10() +  
+  scale_y_log10(labels = label_number(scale = 1e-6, suffix = "M")) +  
   labs(title = "Distribución de la Recaudación por Tipo de Empresa (Escala Logarítmica)",
        x = "Tipo de Empresa",
-       y = "Recaudación (log)") +
+       y = "Recaudación (en millones, log)") +
   theme_minimal()
+
 
 ```
 
